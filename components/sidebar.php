@@ -1,25 +1,27 @@
-<div class="bottom-nav">
-    <div class="sidebar-logo" style="background: white; margin: -60px 20px 30px 20px; padding: 15px; border-radius: 10px; color: #600000; font-weight: 800; text-align: center; display: none;">
-        ROOM<br>RESERVATION<br>SYSTEM
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-logos">
+            <img src="../assets/images/unijipng.png" alt="Uni logo">
+            <img src="../assets/images/jiclogopng.png" alt="JIC logo">
+        </div>
+        <div class="brand-divider" aria-hidden="true"></div>
+        <div class="brand-text">
+            <span>CLUB</span>
+            <span>MANAGEMENT</span>
+            <span>SYSTEM</span>
+        </div>
     </div>
 
-    <a href="pages/user_page.php" class="nav-item">
-        <i class="fas fa-users-cog"></i>
-        <span class="nav-text">Members List</span>
-    </a>
+    <nav class="sidebar-nav">
+        <?php $current = basename($_SERVER['PHP_SELF']); ?>
+        <a href="user_page.php" class="nav-link <?php echo $current === 'user_page.php' ? 'active' : ''; ?>">
+            <i class="fas fa-users"></i> Members List
+        </a>
+        <a href="meeting_list.php" class="nav-link <?php echo $current === 'meeting_list.php' ? 'active' : ''; ?>">
+            <i class="fas fa-calendar-alt"></i> Meeting List
+        </a>
 
-    <a href="pages/meeting_list.php" class="nav-item">
-        <i class="fas fa-calendar-check"></i>
-        <span class="nav-text">Manage Schedule</span>
-    </a>
-
-    <a href="pages/admin_logs.php" class="nav-item">
-        <i class="fas fa-file-alt"></i>
-        <span class="nav-text">View Logs</span>
-    </a>
-
-    <a href="pages/voting_list.php" class="nav-item">
-        <i class="fas fa-vote-yea"></i>
-        <span class="nav-text">Voting List</span>
-    </a>
-</div>
+        <a href="#" class="nav-link nav-spacer"><i class="fas fa-gear"></i> Settings</a>
+        <a href="../auth/logout.php" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log out</a>
+    </nav>
+</aside>
