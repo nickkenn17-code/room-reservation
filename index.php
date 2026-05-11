@@ -1,5 +1,12 @@
 <?php
-// Include the reusable header
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+session_start();
+// If the user already has a session, push them to the dashboard automatically
+// if (isset($_SESSION['id'])) {
+//     header("Location: pages/user_page.php");
+//     exit();
+// }
 require_once 'components/header.php';
 ?>
 
@@ -21,9 +28,27 @@ require_once 'components/header.php';
             </div>
         </div>
 
+        <?php if(isset($_SESSION['register_success'])): ?>
+            <div style="color: green; margin-bottom: 10px;">
+                <?php echo $_SESSION['register_success']; unset($_SESSION['register_success']); ?>
+            </div>
+        <?php endif; ?>
+        
         <div id="loginForm">
             <div class="login-title">Log In</div>
-            <form class="auth-form" action="auth/login_action.php" method="POST">
+            
+            <?php if (isset($_SESSION['login_error'])) { ?>
+                <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; border: 1px solid #f5c6cb;">
+                    <?php 
+                        echo $_SESSION['login_error']; 
+                        unset($_SESSION['login_error']); // Clear it so it doesn't stay forever
+                    ?>
+                </div>
+            <?php } ?>
+
+            <form class="auth-form" action="auth/login_register.php" method="POST">
+                <input type="hidden" name="login" value="1">
+                
                 <input type="email" name="email" class="auth-input" placeholder="Email" required>
                 <input type="password" name="password" class="auth-input" placeholder="Password" required>
                 <button type="submit" class="auth-btn">Log In</button>
@@ -36,16 +61,21 @@ require_once 'components/header.php';
 
         <div id="registerForm" style="display: none;">
             <div class="login-title">Register</div>
-            <form class="auth-form" action="auth/register_action.php" method="POST">
+            <form class="auth-form" action="auth/login_register.php" method="POST">
+                <input type="hidden" name="register" value="1">
+                
                 <input type="text" name="name" class="auth-input" placeholder="Name" required>
+                
+                <input type="email" name="email" class="auth-input" placeholder="Email" required>
+                
                 <select name="major" class="auth-input" required>
                     <option value="">Select Major</option>
                     <option value="Information Technology">Information Technology</option>
                     <option value="Software Engineering">Software Engineering</option>
-                    <option value="Data Science">Data Science</option>
                 </select>
-                <input type="email" name="email" class="auth-input" placeholder="Email" required>
+                
                 <input type="password" name="password" class="auth-input" placeholder="Password" required>
+                
                 <button type="submit" class="auth-btn">Sign Up</button>
             </form>
             <div class="auth-links">
@@ -56,10 +86,11 @@ require_once 'components/header.php';
 </div>
 
 <script>
-    // Simple JS to toggle between Login and Register views without reloading
+    // Simple JS to toggle between Login and Register views without reloading    
     function toggleForms() {
-        var login = document.getElementById('loginForm');
-        var register = document.getElementById('registerForm');
+        const login = document.getElementById('loginForm');
+        const register = document.getElementById('registerForm');
+        
         if (login.style.display === 'none') {
             login.style.display = 'block';
             register.style.display = 'none';
