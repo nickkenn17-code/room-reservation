@@ -52,33 +52,43 @@
         <?php require_once '../components/sidebar.php'; ?>
 
         <main class="main-content-wrapper">
-            <div class="member-grid">
-                <?php if ($result && $result->num_rows > 0): ?>
-                    <?php while ($row = $result->fetch_assoc()):
-                        $role_raw = $row['role'] ?? 'Member';
-                        $role_lower = strtolower($role_raw);
-                        $role_class = in_array($role_lower, ['admin','manager','member']) ? "member-role-$role_lower" : 'member-role-default';
-                        $initials = strtoupper(mb_substr($row['name'], 0, 1));
-                    ?>
-                        <article class="member-card" 
-                                data-id="<?php echo htmlspecialchars($row['id']); ?>"
-                                data-name="<?php echo htmlspecialchars($row['name']); ?>"
-                                data-role="<?php echo htmlspecialchars($role_raw); ?>"
-                                data-major="<?php echo htmlspecialchars($row['major'] ?? 'No Major Assigned'); ?>"
-                                data-avatar="<?php echo htmlspecialchars($row['profile_pic'] ?? 'avatar1.jpg'); ?>"
-                                onclick="openMemberModal(this)"
-                                style="cursor: pointer;">
-                            <div class="member-avatar"><?php echo $initials; ?></div>
-                            <div class="member-info">
-                                <div class="member-name"><?php echo htmlspecialchars($row['name']); ?></div>
-                                <div class="member-id">ID <?php echo htmlspecialchars($row['id']); ?></div>
-                            </div>
-                            <span class="member-role <?php echo $role_class; ?>"><?php echo htmlspecialchars($role_raw); ?></span>
-                        </article>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <div class="member-empty">No members found.</div>
-                <?php endif; ?>
+
+            <div id= "membersView">
+                <div class="member-grid">
+                    <?php if ($result && $result->num_rows > 0): ?>
+                        <?php while ($row = $result->fetch_assoc()):
+                            $role_raw = $row['role'] ?? 'Member';
+                            $role_lower = strtolower($role_raw);
+                            $role_class = in_array($role_lower, ['admin','manager','member']) ? "member-role-$role_lower" : 'member-role-default';
+                            $initials = strtoupper(mb_substr($row['name'], 0, 1));
+                        ?>
+                            <article class="member-card" 
+                                    data-id="<?php echo htmlspecialchars($row['id']); ?>"
+                                    data-name="<?php echo htmlspecialchars($row['name']); ?>"
+                                    data-role="<?php echo htmlspecialchars($role_raw); ?>"
+                                    data-major="<?php echo htmlspecialchars($row['major'] ?? 'No Major Assigned'); ?>"
+                                    data-avatar="<?php echo htmlspecialchars($row['profile_pic'] ?? 'avatar1.jpg'); ?>"
+                                    onclick="openMemberModal(this)"
+                                    style="cursor: pointer;">
+                                <div class="member-avatar"><?php echo $initials; ?></div>
+                                <div class="member-info">
+                                    <div class="member-name"><?php echo htmlspecialchars($row['name']); ?></div>
+                                    <div class="member-id">ID <?php echo htmlspecialchars($row['id']); ?></div>
+                                </div>
+                                <span class="member-role <?php echo $role_class; ?>"><?php echo htmlspecialchars($role_raw); ?></span>
+                            </article>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <div class="member-empty">No members found.</div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div id="meetingsView" style="display: none;">
+                <div class="member-empty">
+                    <i class="fas fa-calendar-alt" style="font-size: 24px; margin-bottom: 10px; color: #5a0505;"></i><br>
+                    No meetings scheduled yet.
+                </div>
             </div>
 
             <!-- modal structure for member details -->
@@ -150,6 +160,32 @@
             closeMemberModal();
         }
     });
+
+
+    // Function to switch between Members and Meetings views
+    function switchView(viewName) {
+        // 1. Remove the 'active' highlight from all sidebar links
+        document.getElementById('nav-members').classList.remove('active');
+        document.getElementById('nav-meetings').classList.remove('active');
+
+        // 2. Add the 'active' highlight to the link you just clicked
+        document.getElementById('nav-' + viewName).classList.add('active');
+
+        // 3. Hide all view containers
+        document.getElementById('membersView').style.display = 'none';
+        document.getElementById('meetingsView').style.display = 'none';
+
+        // 4. Show only the requested container
+        document.getElementById(viewName + 'View').style.display = 'block';
+
+        // 5. Update the text in the Topbar Title to match
+        const titleElement = document.querySelector('.page-title');
+        if (viewName === 'members') {
+            titleElement.innerText = 'MEMBERS LIST';
+        } else if (viewName === 'meetings') {
+            titleElement.innerText = 'MEETING LIST';
+        }
+    }
     
 </script>
 </body>
