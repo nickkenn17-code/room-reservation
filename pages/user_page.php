@@ -18,11 +18,11 @@
     $can_edit = ($isAdmin);
 
     // 3. Fetch Users Data - Using your specific table names
-    $sql = "SELECT user.id, user.name, role.role 
+    $sql = "SELECT user.id, user.name, user.major, user.profile_pic, role.role
             FROM user 
             LEFT JOIN role ON user.id = role.user_id 
             ORDER BY user.id ASC";
-    $result = $conn->query($sql);
+            $result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -60,7 +60,14 @@
                         $role_class = in_array($role_lower, ['admin','manager','member']) ? "member-role-$role_lower" : 'member-role-default';
                         $initials = strtoupper(mb_substr($row['name'], 0, 1));
                     ?>
-                        <article class="member-card">
+                        <article class="member-card" 
+                                data-id="<?php echo htmlspecialchars($row['id']); ?>"
+                                data-name="<?php echo htmlspecialchars($row['name']); ?>"
+                                data-role="<?php echo htmlspecialchars($role_raw); ?>"
+                                data-major="<?php echo htmlspecialchars($row['major'] ?? 'No Major Assigned'); ?>"
+                                data-avatar="<?php echo htmlspecialchars($row['profile_pic'] ?? 'avatar1.jpg'); ?>"
+                                onclick="openMemberModal(this)"
+                                style="cursor: pointer;">
                             <div class="member-avatar"><?php echo $initials; ?></div>
                             <div class="member-info">
                                 <div class="member-name"><?php echo htmlspecialchars($row['name']); ?></div>
@@ -73,6 +80,24 @@
                     <div class="member-empty">No members found.</div>
                 <?php endif; ?>
             </div>
+
+            <!-- modal structure for member details -->
+            <div id="memberModal" class="custom-modal">
+                <div class="custom-modal-content">
+                    <span class="close-modal" onclick="closeMemberModal()">&times;</span>
+                    <div class="modal-body">
+                        <div class="modal-body">
+                            <div class="modal-avatar-wrapper">
+                                <img id="modalAvatar" src="" alt="Profile Picture" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                        <h2 id="modalName" class="modal-name">[Name]</h2>
+                        <p id="modalId" class="modal-text">[ID]</p>
+                        <p id="modalRole" class="modal-text font-bold">[Role]</p>
+                        <p id="modalClub" class="modal-text">[Club/Major]</p>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 <script>
@@ -89,6 +114,43 @@
             overlay.classList.remove('active');
         });
     }
+
+
+    // Function to open and populate the modal
+    function openMemberModal(element) {
+        // Get data from the clicked card
+        const name = element.getAttribute('data-name');
+        const id = element.getAttribute('data-id');
+        const role = element.getAttribute('data-role');
+        const major = element.getAttribute('data-major');
+        const avatar = element.getAttribute('data-avatar');
+
+        // Inject data into the modal text elements
+        document.getElementById('modalName').innerText = name;
+        document.getElementById('modalId').innerText = "ID " + id;
+        document.getElementById('modalRole').innerText = role;
+        document.getElementById('modalClub').innerText = major;
+
+        // Set the image source (Adjust the folder path if your avatars are stored elsewhere)
+        document.getElementById('modalAvatar').src = '../assets/images/' + avatar;
+
+        // Show the modal
+        document.getElementById('memberModal').classList.add('show');
+    }
+
+    // Function to close the modal
+    function closeMemberModal() {
+        document.getElementById('memberModal').classList.remove('show');
+    }
+
+    // Optional: Close modal when clicking outside the white box
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('memberModal');
+        if (event.target === modal) {
+            closeMemberModal();
+        }
+    });
+    
 </script>
 </body>
 </html>
