@@ -21,7 +21,19 @@
             <i class="fas fa-calendar-alt"></i> Meeting List
         </a>
 
+        <?php if ($isAdmin || $isManager): ?>
+            <a href="javascript:void(0);" onclick="switchView('requests')" id="nav-requests" class="nav-link">
+                <i class="fas fa-envelope-open-text"></i> Requests
+            </a>
+        <?php endif; ?>
+
+        <?php if ($isAdmin): ?>
+            <a href="javascript:void(0);" onclick="switchView('logs')" id="nav-logs" class="nav-link">
+                <i class="fas fa-file-alt"></i> Activity Logs
+            </a>
+        <?php endif; ?>
+
         <a href="#" class="nav-link nav-spacer"><i class="fas fa-gear"></i> Settings</a>
-        <a href="../auth/logout.php" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log out</a>
+        <a href="../index.php" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log out</a>
     </nav>
 </aside>

@@ -5,13 +5,29 @@ session_start();
 require_once __DIR__ . '/../components/config.php';
 /** @var mysqli $conn */
 
+function is_strong_password($password) {
+    return strlen($password) >= 8
+        && preg_match('/[a-z]/', $password)
+        && preg_match('/[A-Z]/', $password)
+        && preg_match('/[0-9]/', $password);
+}
+
 //this handles user registration
 if (isset($_POST['register'])) {
     //get data from the registration form
     $name = $_POST['name'];
     $email = $_POST['email'];  
+    $password_raw = $_POST['password'] ?? '';
+
+    if (!is_strong_password($password_raw)) {
+        $_SESSION['register_error'] = 'Password must be at least 8 chars and include upper, lower, and a number.';
+        $_SESSION['active_form'] = 'register';
+        header("Location: ../index.php");
+        exit();
+    }
+
     //hashing the password for security
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); 
+    $password = password_hash($password_raw, PASSWORD_DEFAULT); 
     
     //default role for new users
     $role = 'Member'; 
@@ -39,6 +55,8 @@ if (isset($_POST['register'])) {
         $_SESSION['register_error'] = "Email already exists.";
         $_SESSION['active_form'] = 'register';
         $check_stmt->close(); 
+        header("Location: ../index.php");
+        exit();
     } else {
         //ensure email is unique, then proceed with registration
         $check_stmt->close(); 
@@ -65,7 +83,6 @@ if (isset($_POST['register'])) {
         $user_stmt->close();
     }
 
-    session_unset(); //
     $_SESSION['register_success'] = "Account created! You can now log in.";
     //redirect back to home page after registration
     header("Location: ../index.php");
@@ -111,6 +128,7 @@ if (isset($_POST['login'])) {
             $_SESSION['name'] = $user['name'];  
             $_SESSION['email'] = $user['email']; 
             $_SESSION['role'] = $user_role; 
+            $_SESSION['weak_password'] = !is_strong_password($password);
 
             //log this login activity
             if (function_exists('logActivity')) {
@@ -119,7 +137,7 @@ if (isset($_POST['login'])) {
 
             // Route to the correct page in the /pages/ folder
             if (strtolower($user_role) == 'admin') {
-                header("Location: ../pages/admin_page.php");
+                header("Location: ../pages/user_page.php");
             } elseif (strtolower($user_role) == 'manager') {
                 header("Location: ../pages/user_page.php");
             } else {

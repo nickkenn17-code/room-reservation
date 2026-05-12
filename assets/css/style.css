@@ -85,6 +85,71 @@ a {
     font-size: 14px;
 }
 
+.password-field {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.password-field .auth-input {
+    padding-right: 48px;
+    margin-bottom: 0;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 0;
+    bottom: 0;
+    width: 32px;
+    height: 100%;
+    border: none;
+    background: transparent;
+    color: #5a0505;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle i {
+    line-height: 1;
+}
+
+.password-toggle:focus {
+    outline: 2px solid #5a0505;
+    outline-offset: 2px;
+}
+
+.password-strength {
+    width: 100%;
+    margin: -6px 0 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: left;
+}
+
+.password-strength-bar {
+    height: 6px;
+    width: 100%;
+    background: #e6e6e6;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.password-strength-fill {
+    height: 100%;
+    width: 0%;
+    background: #c62828;
+    transition: width 0.2s ease;
+}
+
+.password-strength-fill.medium { background: #f0ad4e; }
+.password-strength-fill.strong { background: #155724; }
+
 .auth-btn {
     background-color: var(--white);
     color: var(--primary-color);
@@ -214,7 +279,7 @@ a {
 
 .login-page .auth-form {
     width: 100%;
-    max-width: 280px;
+    max-width: 420px;
 }
 
 /* Mobile adjustments */
@@ -540,6 +605,49 @@ a {
 
 .topbar-logout i { font-size: 11px; }
 
+/* --- TOPBAR PROFILE SECTION --- */
+.topbar-profile {
+    position: absolute;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 8px;
+    border-radius: 30px;
+    transition: background 0.2s;
+}
+
+.profile-name {
+    color: #ffffff;
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.profile-avatar {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Optional: Mobile adjustments to hide name if space is tight */
+@media (max-width: 480px) {
+    .profile-name {
+        display: none;
+    }
+}
+
 /* --- LAYOUT --- */
 .user-body .user-container {
     position: relative;
@@ -699,17 +807,45 @@ a {
 }
 
 .member-card {
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border-radius: 12px;
-    padding: 14px 16px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.06);
+    background: #ffffff; /* This restores the white color */
+    border-radius: 12px; /* Restores the rounded corners */
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
     gap: 12px;
-    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Adds that slight shadow for depth */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.member-info {
+    flex: 1; /* Allows name to take available space but not push too hard */
+    min-width: 0;
+}
+
+.member-right-section {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Precise gap between badge and pen */
+    flex-shrink: 0; /* Keeps the right side from squishing */
+}
+
+.edit-pen-btn {
+    background: none;
+    border: none;
+    color: #5a0505;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    transition: transform 0.2s;
+}
+
+.edit-pen-btn:hover {
+    transform: scale(1.2);
+    color: #8b0000;
 }
 
 .member-card:hover {
