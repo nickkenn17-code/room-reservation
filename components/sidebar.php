@@ -6,18 +6,18 @@
         </div>
         <div class="brand-divider" aria-hidden="true"></div>
         <div class="brand-text">
-            <span>CLUB</span>
-            <span>MANAGEMENT</span>
+            <span>ROOM</span>
+            <span>RESERVATION</span>
             <span>SYSTEM</span>
         </div>
     </div>
 
     <nav class="sidebar-nav">
-        <?php $current = basename($_SERVER['PHP_SELF']); ?>
-        <a href="user_page.php" class="nav-link <?php echo $current === 'user_page.php' ? 'active' : ''; ?>">
+        <a href="javascript:void(0);" onclick="switchView('members')" id="nav-members" class="nav-link active">
             <i class="fas fa-users"></i> Members List
         </a>
-        <a href="meeting_list.php" class="nav-link <?php echo $current === 'meeting_list.php' ? 'active' : ''; ?>">
+        
+        <a href="javascript:void(0);" onclick="switchView('meetings')" id="nav-meetings" class="nav-link">
             <i class="fas fa-calendar-alt"></i> Meeting List
         </a>
 
