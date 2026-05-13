@@ -1,0 +1,21 @@
+{
+  "name": "Room Reservation System",
+  "short_name": "RoomRes",
+  "description": "University Room Reservation and Library Management",
+  "start_url": "/index.php",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5a0505",
+  "icons": [
+    {
+      "src": "assets/images/unijipng.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/images/unijipng.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

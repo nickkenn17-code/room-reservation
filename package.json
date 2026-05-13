@@ -1,0 +1,26 @@
+{
+  "name": "room-reservation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickkenn17-code/room-reservation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nickkenn17-code/room-reservation/issues"
+  },
+  "homepage": "https://github.com/nickkenn17-code/room-reservation#readme",
+  "devDependencies": {
+    "grunt": "^1.6.2",
+    "grunt-contrib-cssmin": "^5.0.0",
+    "grunt-contrib-watch": "^1.1.0"
+  }
+}
