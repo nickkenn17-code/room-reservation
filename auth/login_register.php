@@ -91,6 +91,23 @@ if (isset($_POST['register'])) {
 
 //this is for handling user login
 if (isset($_POST['login'])) {
+
+    // --- reCAPTCHA Verification ---
+    $recaptcha_secret = "6Ld9cecsAAAAAIS_Q68ET2NqsD39gSHojuQyHTX9"; 
+    $recaptcha_response = $_POST['g-recaptcha-response'] ?? '';
+
+    // Verify the response with Google's API
+    $verify_response = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+    $response_data = json_decode($verify_response);
+
+    if (!$response_data->success) {
+        // If CAPTCHA fails or is ignored, stop login and show error
+        $_SESSION['login_error'] = "Please complete the CAPTCHA verification.";
+        $_SESSION['active_form'] = 'login';
+        header("Location: ../index.php");
+        exit();
+    }
+
     //get email and password from login form
     $email = $_POST['email'];
     $password = $_POST['password'];

@@ -73,6 +73,9 @@ require_once 'components/header.php';
                         <i class="fa-regular fa-eye" aria-hidden="true"></i>
                     </button>
                 </div>
+
+                <div class="g-recaptcha" data-sitekey="6Ld9cecsAAAAAIQT71vTNpeqoq98QsWnSAm3BIGT" style="margin-bottom: 15px; display: flex; justify-content: center;"></div>
+
                 <button type="submit" class="auth-btn">Log In</button>
             </form>
             <div class="auth-links">
@@ -259,6 +262,8 @@ require_once 'components/header.php';
         document.getElementById('registerForm').style.display = 'block';
     }
 </script>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 </body>
 </html>
