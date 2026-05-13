@@ -6,6 +6,18 @@ $username = "root";
 $password = "";            
 $dbname = "club_db";       
 
+// Optional secrets file (local-only) for keys like reCAPTCHA.
+$recaptcha_secret = '';
+$secrets_path = __DIR__ . '/secrets.php';
+if (file_exists($secrets_path)) {
+    require $secrets_path;
+}
+
+// Fallback to environment variable if not set in secrets.php
+if (!$recaptcha_secret) {
+    $recaptcha_secret = getenv('RECAPTCHA_SECRET') ?: '';
+}
+
 // Array of ports to try (Friend's port first, then your port)
 $ports_to_try = [3306, 3307];
 

@@ -93,7 +93,13 @@ if (isset($_POST['register'])) {
 if (isset($_POST['login'])) {
 
     // --- reCAPTCHA Verification ---
-    $recaptcha_secret = "6Ld9cecsAAAAAIS_Q68ET2NqsD39gSHojuQyHTX9"; 
+    $recaptcha_secret = $recaptcha_secret ?? '';
+    if (!$recaptcha_secret) {
+        $_SESSION['login_error'] = "CAPTCHA is not configured. Please contact the administrator.";
+        $_SESSION['active_form'] = 'login';
+        header("Location: ../index.php");
+        exit();
+    }
     $recaptcha_response = $_POST['g-recaptcha-response'] ?? '';
 
     // Verify the response with Google's API
