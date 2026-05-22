@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jan 23, 2026 at 08:37 AM
+-- Host: 127.0.0.1:3307
+-- Generation Time: May 22, 2026 at 06:30 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -123,7 +123,38 @@ INSERT INTO `attendance` (`id`, `user_id`, `status`, `schedule_id`, `reason`) VA
 (7, 6, 'Present', 5, NULL),
 (8, 5, 'Present', 5, NULL),
 (9, 1, 'Present', 5, NULL),
-(10, 4, 'Absent', 8, 'sickk');
+(10, 4, 'Absent', 8, 'sickk'),
+(12, 9, 'Absent', 9, 'help'),
+(13, 9, 'Rejected', 10, 'Lazy to come'),
+(14, 10, 'Absent', 10, 'I am sick');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `faq_chatbot`
+--
+
+CREATE TABLE `faq_chatbot` (
+  `id` int(11) NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `answer` text NOT NULL,
+  `category` varchar(50) DEFAULT 'General',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `faq_chatbot`
+--
+
+INSERT INTO `faq_chatbot` (`id`, `question`, `answer`, `category`, `created_at`) VALUES
+(1, 'How do I know if an event is still open for registration?', 'You can check the Event List page. Events scheduled in the future will have a green Open badge, while past events will be marked as Closed.', 'Events', '2026-05-22 16:28:46'),
+(2, 'How do I RSVP for an upcoming event?', 'Go to the Event List, find an Open event, and click the RSVP button. You can select either Im Going or Cant Make It.', 'Events', '2026-05-22 16:28:46'),
+(3, 'I submitted an Absence Request by mistake. Can I cancel it?', 'Once submitted, absence requests are logged in the database. Please contact an Event Manager or Admin to have your attendance status manually updated back to Present.', 'Attendance', '2026-05-22 16:28:46'),
+(4, 'Do I need to provide a reason when requesting an absence?', 'Yes, the system requires a brief explanation in the Reason box so that event organizers can review why you cannot attend the scheduled event.', 'Attendance', '2026-05-22 16:28:46'),
+(5, 'What is the difference between an Event Manager and an Admin?', 'Admins have full control over the system, including editing user roles and database settings. Event Managers can create events, view attendance logs, and manage schedules, but cannot alter system-wide settings.', 'Account', '2026-05-22 16:28:46'),
+(6, 'Why am I seeing a CAPTCHA when trying to log in?', 'We use Google reCAPTCHA to ensure the security of the Event Reservation System and protect user accounts from automated bot attacks.', 'Account', '2026-05-22 16:28:46'),
+(7, 'Can I use this system on my phone?', 'Yes! Our system is a Progressive Web App (PWA). You can install it directly to your phone or tablets home screen by opening your browser menu and selecting Add to Home Screen.', 'General', '2026-05-22 16:28:46'),
+(8, 'How do I contact support if I have a different question?', 'If you have an issue not listed here, please click the Other Question option or navigate to the Contact Page to reach out to an administrator directly.', 'General', '2026-05-22 16:28:46');
 
 -- --------------------------------------------------------
 
@@ -223,7 +254,9 @@ INSERT INTO `role` (`id`, `role`, `user_id`) VALUES
 (5, 'Member', 5),
 (6, 'Member', 6),
 (7, 'Member', 7),
-(8, 'Member', 8);
+(8, 'Member', 8),
+(9, 'Member', 9),
+(10, 'Member', 10);
 
 -- --------------------------------------------------------
 
@@ -245,7 +278,9 @@ INSERT INTO `schedule` (`id`, `meeting_name`, `meeting_time`) VALUES
 (1, 'Media Club', '2025-12-20 14:00:00'),
 (2, 'Art Club', '2025-12-22 09:30:00'),
 (5, 'Dance Club', '2026-01-05 16:00:00'),
-(8, 'IT Club', '2026-03-12 08:30:00');
+(8, 'IT Club', '2026-03-12 08:30:00'),
+(9, 'IT Club', '2026-05-13 14:52:18'),
+(10, 'Baking Club', '2026-05-18 12:43:00');
 
 -- --------------------------------------------------------
 
@@ -274,7 +309,9 @@ INSERT INTO `user` (`id`, `name`, `major`, `email`, `password`, `profile_pic`) V
 (5, 'shandy', 'information technology', 'shandy@gmail.com', '$2y$10$kuQbRnM/Z5eqirDEhmyO5.BruLmwGgGROt53L/hXDlX4vqrnDrsk.', 'avatar4.jpg'),
 (6, 'raf', 'accounting', 'raf@gmail.com', '$2y$10$AK9lpd2EpUkxFjhMrmgRl.ME6/pCw4kI1RS05P8DWXcDky7YdYD3q', 'avatar3.jpg'),
 (7, 'jj', 'data science', 'jj@gmail.com', '$2y$10$M8NCrWyxC9DNbPVzs/ujweNE8LBtMMw3/4TJjs8y1oJDsnNYtVL9y', 'avatar3.jpg'),
-(8, 'kenny', 'information technology', 'kenny@gmail.com', '$2y$10$5wOezxdUD6YBGcYcbDCzJuN3knFEEQq7YY33eWaCToAMMvTWzpbwG', 'avatar2.jpg');
+(8, 'kenny', 'information technology', 'kenny@gmail.com', '$2y$10$5wOezxdUD6YBGcYcbDCzJuN3knFEEQq7YY33eWaCToAMMvTWzpbwG', 'avatar2.jpg'),
+(9, 'Kenny', 'Information Technology', 'kenny@mail.com', '$2y$10$Ts2XTc9pvI.dRw4mCSQE5OBpcMHL/AG1HFmkmneJJ4Av5ZEmvg1ci', 'avatar2.jpg'),
+(10, 'Nicholas Kenny', 'Information Technology', 'kenny1@mail.com', '$2y$10$HCdAC6OW.8MgugHRSxONzup1lWACAKdkOhNPbuxl0fUU0nkZ2dbtO', 'avatar4.jpg');
 
 -- --------------------------------------------------------
 
@@ -296,7 +333,8 @@ INSERT INTO `venue` (`id`, `schedule_id`, `room_name`) VALUES
 (1, 1, '103'),
 (2, 2, '506'),
 (5, 5, '702'),
-(8, 8, '606');
+(8, 8, '606'),
+(9, 10, '10.14');
 
 --
 -- Indexes for dumped tables
@@ -315,6 +353,12 @@ ALTER TABLE `attendance`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FOREIGN KEY` (`schedule_id`),
   ADD KEY `attendance_user` (`user_id`);
+
+--
+-- Indexes for table `faq_chatbot`
+--
+ALTER TABLE `faq_chatbot`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `polls`
@@ -378,7 +422,13 @@ ALTER TABLE `activity_log`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `faq_chatbot`
+--
+ALTER TABLE `faq_chatbot`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `polls`
@@ -402,25 +452,25 @@ ALTER TABLE `poll_votes`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `venue`
 --
 ALTER TABLE `venue`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
