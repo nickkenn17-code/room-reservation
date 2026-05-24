@@ -1,7 +1,7 @@
 <?php
 // components/faq_modal.php 
 
-$db_table_name = 'event_faqs';
+$db_table_name = 'faq_chatbot'; 
 $col_category  = 'category';
 $col_keywords  = 'keywords';
 $col_response  = 'bot_response';
@@ -23,7 +23,8 @@ if ($table_exists) {
         while ($row = $result_faqs->fetch_assoc()) {
             $faq_dataset[] = [
                 'category' => $row[$col_category],
-                'keywords' => explode(',', strtolower($row[$col_keywords])),
+                // CHANGED: Added array_map('trim', ...) to remove hidden spaces
+                'keywords' => array_map('trim', explode(',', strtolower($row[$col_keywords]))),
                 'response' => $row[$col_response]
             ];
         }

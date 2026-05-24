@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: May 22, 2026 at 06:30 PM
+-- Generation Time: May 24, 2026 at 02:34 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -136,9 +136,9 @@ INSERT INTO `attendance` (`id`, `user_id`, `status`, `schedule_id`, `reason`) VA
 
 CREATE TABLE `faq_chatbot` (
   `id` int(11) NOT NULL,
-  `question` varchar(255) NOT NULL,
-  `answer` text NOT NULL,
-  `category` varchar(50) DEFAULT 'General',
+  `category` varchar(100) NOT NULL,
+  `keywords` text NOT NULL,
+  `bot_response` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -146,15 +146,17 @@ CREATE TABLE `faq_chatbot` (
 -- Dumping data for table `faq_chatbot`
 --
 
-INSERT INTO `faq_chatbot` (`id`, `question`, `answer`, `category`, `created_at`) VALUES
-(1, 'How do I know if an event is still open for registration?', 'You can check the Event List page. Events scheduled in the future will have a green Open badge, while past events will be marked as Closed.', 'Events', '2026-05-22 16:28:46'),
-(2, 'How do I RSVP for an upcoming event?', 'Go to the Event List, find an Open event, and click the RSVP button. You can select either Im Going or Cant Make It.', 'Events', '2026-05-22 16:28:46'),
-(3, 'I submitted an Absence Request by mistake. Can I cancel it?', 'Once submitted, absence requests are logged in the database. Please contact an Event Manager or Admin to have your attendance status manually updated back to Present.', 'Attendance', '2026-05-22 16:28:46'),
-(4, 'Do I need to provide a reason when requesting an absence?', 'Yes, the system requires a brief explanation in the Reason box so that event organizers can review why you cannot attend the scheduled event.', 'Attendance', '2026-05-22 16:28:46'),
-(5, 'What is the difference between an Event Manager and an Admin?', 'Admins have full control over the system, including editing user roles and database settings. Event Managers can create events, view attendance logs, and manage schedules, but cannot alter system-wide settings.', 'Account', '2026-05-22 16:28:46'),
-(6, 'Why am I seeing a CAPTCHA when trying to log in?', 'We use Google reCAPTCHA to ensure the security of the Event Reservation System and protect user accounts from automated bot attacks.', 'Account', '2026-05-22 16:28:46'),
-(7, 'Can I use this system on my phone?', 'Yes! Our system is a Progressive Web App (PWA). You can install it directly to your phone or tablets home screen by opening your browser menu and selecting Add to Home Screen.', 'General', '2026-05-22 16:28:46'),
-(8, 'How do I contact support if I have a different question?', 'If you have an issue not listed here, please click the Other Question option or navigate to the Contact Page to reach out to an administrator directly.', 'General', '2026-05-22 16:28:46');
+INSERT INTO `faq_chatbot` (`id`, `category`, `keywords`, `bot_response`, `created_at`) VALUES
+(1, 'Invitation Codes', 'code, invitation, pin, access, login, join, register', 'Your random invitation code is issued directly by an event PIC or staff member via email or WhatsApp. This code serves as your universal pass—enter it on the login screen to access the full portal!', '2026-05-24 12:33:17'),
+(2, 'Event Duration', 'duration, time, long, schedule, hours, open, close, calendar, date, past, present', 'Each event card on the dashboard displays its specific date and active duration hours. You can browse live active showcases as well as past cultural exhibitions.', '2026-05-24 12:33:17'),
+(3, 'Requesting Extensions', 'extend, extension, longer, late, change time, delay, staff, add time', 'While events have predefined hours, an event PIC or staff member can trigger an extension request if visitor traffic is high. Approved extensions update the event closing times live!', '2026-05-24 12:33:17'),
+(4, 'Photo Showcase', 'photo, picture, image, gallery, showcase, media, display, collection', 'Every single past and present cultural event features a dedicated showcase section holding a gallery of at least 25 and up to 75 high-quality documentation photos.', '2026-05-24 12:33:17'),
+(5, 'Admission Fees', 'ticket, price, cost, buy, free, fee, admission, payment', 'General access to the platform and standard entry to all individual exhibitions is completely free for invited visitors utilizing a valid invitation code.', '2026-05-24 12:33:17'),
+(6, 'Ticket Info & Price', 'ticket, price, cost, buy, free, fee, admission, enter, entrance', 'Entry to the Cultural Festival is completely free for all active university students and staff! For public visitors, entry passes can be purchased directly at the main registration gate for IDR 50,000.', '2026-05-24 12:33:17'),
+(7, 'Festival Schedule', 'duration, time, long, hours, schedule, open, start, close, clock', 'The main cultural exhibition opens daily at 09:00 AM and concludes its regular schedule at 05:00 PM. Special evening cultural performances run from 07:00 PM to 09:30 PM.', '2026-05-24 12:33:17'),
+(8, 'Schedule Extension', 'extend, extension, longer, late, delay, request, change time', 'If a booth PIC or staff member needs to request an event duration extension for special performances or high visitor volume, they can submit an \'Extension Application\' form through the Staff Dashboard panel. Visitors will receive a live notification popup in this app if an extension is approved!', '2026-05-24 12:33:17'),
+(9, 'Dress Code', 'wear, dress, clothes, batik, outfit, custom, costume', 'We highly encourage all visitors and participants to wear traditional attire, regional costumes, or smart casual clothing to complement the cultural showcase atmosphere!', '2026-05-24 12:33:17'),
+(10, 'Food & Beverages', 'food, drink, eat, beverage, culinary, booth, lunch', 'Yes! The event features a dedicated Cultural Culinary Zone showcasing traditional authentic foods and beverages from over 15 different regions. Outside food is not permitted inside the main exhibition hall.', '2026-05-24 12:33:17');
 
 -- --------------------------------------------------------
 
@@ -428,7 +430,7 @@ ALTER TABLE `attendance`
 -- AUTO_INCREMENT for table `faq_chatbot`
 --
 ALTER TABLE `faq_chatbot`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `polls`
