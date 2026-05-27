@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: May 24, 2026 at 02:34 PM
+-- Generation Time: May 27, 2026 at 04:08 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -338,6 +338,28 @@ INSERT INTO `venue` (`id`, `schedule_id`, `room_name`) VALUES
 (8, 8, '606'),
 (9, 10, '10.14');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `visitor_inquiries`
+--
+
+CREATE TABLE `visitor_inquiries` (
+  `id` int(11) NOT NULL,
+  `visitor_name` varchar(100) NOT NULL,
+  `message` text NOT NULL,
+  `admin_reply` text DEFAULT NULL,
+  `status` enum('Pending','Answered') DEFAULT 'Pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `visitor_inquiries`
+--
+
+INSERT INTO `visitor_inquiries` (`id`, `visitor_name`, `message`, `admin_reply`, `status`, `created_at`) VALUES
+(1, 'Kenny', 'How can i get free food', NULL, 'Pending', '2026-05-27 14:06:08');
+
 --
 -- Indexes for dumped tables
 --
@@ -411,6 +433,12 @@ ALTER TABLE `venue`
   ADD KEY `schedule_id` (`schedule_id`);
 
 --
+-- Indexes for table `visitor_inquiries`
+--
+ALTER TABLE `visitor_inquiries`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -473,6 +501,12 @@ ALTER TABLE `user`
 --
 ALTER TABLE `venue`
   MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `visitor_inquiries`
+--
+ALTER TABLE `visitor_inquiries`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables

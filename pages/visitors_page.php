@@ -38,7 +38,7 @@
             
             <div class="sidebar-nav">
                 <a href="#" class="nav-link active"><i class="fas fa-home"></i> Events List</a>
-                <a href="#" class="nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="../pages/contact.php" class="nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
                 <div class="nav-spacer"></div>
                 <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
                 <a href="../auth/logout.php" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log out</a>
