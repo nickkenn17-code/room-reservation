@@ -40,26 +40,50 @@
                 <i class="fas fa-bars"></i>
             </button>
             
-            <h1 class="page-title" id="page-title">Members List</h1>
+            <h1 class="page-title" id="page-title">
+                <?php
+                    // Dynamic page title based on file
+                    $page = basename($_SERVER['PHP_SELF']);
+                    if ($page === 'inquiries_page.php') {
+                        echo 'Inquiries List';
+                    } else {
+                        echo 'Members List';
+                    }
+                ?>
+            </h1>
 
             <div class="topbar-profile">
-                <span class="profile-name"><?php echo htmlspecialchars($_SESSION['name']); ?></span>
-                <div class="profile-avatar">
-                    <?php 
-                        $raw_pic = $_SESSION['profile_pic'] ?? '';
-                        $pic_name = !empty($raw_pic) ? basename($raw_pic) : '';
-                        $pic_path = $asset_prefix . 'assets/images/' . $pic_name;
+    <span class="profile-name">
+        <?php 
+            // Check if the current file is inquiries_page.php
+            if (basename($_SERVER['PHP_SELF']) === 'inquiries_page.php') {
+                echo 'Admin';
+            } else {
+                echo htmlspecialchars($_SESSION['name'] ?? 'Visitor');
+            }
+        ?>
+    </span>
+            <div class="profile-avatar">
+                <?php 
+                    $raw_pic = $_SESSION['profile_pic'] ?? '';
+                    $pic_name = !empty($raw_pic) ? basename($raw_pic) : '';
+                    $pic_path = $asset_prefix . 'assets/images/' . $pic_name;
 
-                        if (!empty($pic_name) && file_exists($pic_path)): ?>
-                            <img src="<?php echo htmlspecialchars($pic_path); ?>" 
-                                 alt="Profile" 
-                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                        <?php else: 
-                            echo strtoupper(mb_substr($_SESSION['name'], 0, 1)); 
-                        endif; 
-                    ?>
-                </div>
+                    if (!empty($pic_name) && file_exists($pic_path)): ?>
+                        <img src="<?php echo htmlspecialchars($pic_path); ?>" 
+                            alt="Profile" 
+                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    <?php else: 
+                        // If it's inquiries_page, show 'A' for Admin initials, otherwise use session name
+                        if (basename($_SERVER['PHP_SELF']) === 'inquiries_page.php') {
+                            echo 'A';
+                        } else {
+                            echo strtoupper(mb_substr($_SESSION['name'] ?? 'V', 0, 1)); 
+                        }
+                    endif; 
+                ?>
             </div>
+        </div>
         </header>
 
         <div class="overlay"></div>
