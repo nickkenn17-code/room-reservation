@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: May 27, 2026 at 04:08 PM
+-- Generation Time: May 28, 2026 at 07:11 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -127,6 +127,27 @@ INSERT INTO `attendance` (`id`, `user_id`, `status`, `schedule_id`, `reason`) VA
 (12, 9, 'Absent', 9, 'help'),
 (13, 9, 'Rejected', 10, 'Lazy to come'),
 (14, 10, 'Absent', 10, 'I am sick');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dummy_events`
+--
+
+CREATE TABLE `dummy_events` (
+  `id` int(11) NOT NULL,
+  `event_name` varchar(150) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `dummy_events`
+--
+
+INSERT INTO `dummy_events` (`id`, `event_name`, `created_at`) VALUES
+(1, 'Cultural Festival 2026', '2026-05-28 03:12:22'),
+(2, 'Tech & AI Summit', '2026-05-28 03:12:22'),
+(3, 'University Open House', '2026-05-28 03:12:22');
 
 -- --------------------------------------------------------
 
@@ -347,6 +368,8 @@ INSERT INTO `venue` (`id`, `schedule_id`, `room_name`) VALUES
 CREATE TABLE `visitor_inquiries` (
   `id` int(11) NOT NULL,
   `visitor_name` varchar(100) NOT NULL,
+  `visitor_email` varchar(100) NOT NULL,
+  `event_id` int(11) NOT NULL,
   `message` text NOT NULL,
   `admin_reply` text DEFAULT NULL,
   `status` enum('Pending','Answered') DEFAULT 'Pending',
@@ -357,8 +380,9 @@ CREATE TABLE `visitor_inquiries` (
 -- Dumping data for table `visitor_inquiries`
 --
 
-INSERT INTO `visitor_inquiries` (`id`, `visitor_name`, `message`, `admin_reply`, `status`, `created_at`) VALUES
-(1, 'Kenny', 'How can i get free food', NULL, 'Pending', '2026-05-27 14:06:08');
+INSERT INTO `visitor_inquiries` (`id`, `visitor_name`, `visitor_email`, `event_id`, `message`, `admin_reply`, `status`, `created_at`) VALUES
+(1, 'nicholas', 'nicholas@gmail.com', 2, 'Help me', NULL, 'Pending', '2026-05-28 03:44:27'),
+(2, 'dede', 'dwhwihdi@gmai', 2, 'wodwodwd', NULL, 'Pending', '2026-05-28 04:59:48');
 
 --
 -- Indexes for dumped tables
@@ -377,6 +401,12 @@ ALTER TABLE `attendance`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FOREIGN KEY` (`schedule_id`),
   ADD KEY `attendance_user` (`user_id`);
+
+--
+-- Indexes for table `dummy_events`
+--
+ALTER TABLE `dummy_events`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `faq_chatbot`
@@ -455,6 +485,12 @@ ALTER TABLE `attendance`
   MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
+-- AUTO_INCREMENT for table `dummy_events`
+--
+ALTER TABLE `dummy_events`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `faq_chatbot`
 --
 ALTER TABLE `faq_chatbot`
@@ -506,7 +542,7 @@ ALTER TABLE `venue`
 -- AUTO_INCREMENT for table `visitor_inquiries`
 --
 ALTER TABLE `visitor_inquiries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
