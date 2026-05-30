@@ -1,12 +1,10 @@
+
+
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 session_start();
-// If the user already has a session, push them to the dashboard automatically
-// if (isset($_SESSION['id'])) {
-//     header("Location: pages/user_page.php");
-//     exit();
-// }
+
 require_once 'components/header.php';
 ?>
 
@@ -14,219 +12,134 @@ require_once 'components/header.php';
     <div class="login-hero"></div>
 
     <div class="login-panel">
-        <div class="login-brand">
-            <div class="brand-logos">
-                <img src="assets/images/unijipng.png" alt="UNIJI logo">
-                <img src="assets/images/jiclogopng.png" alt="JIC logo">
-            </div>
-            <div class="brand-divider"></div>
-            <div class="brand-title">
-                LIBRARY<br>
-                MANAGEMENT<br>
-                SYSTEM
+        <div class="login-brand" style="text-align: center; margin-bottom: 20px;">
+            <div class="brand-title" style="font-family: 'Shrikhand', cursive; font-size: 28px; color: #5a0505;">
+                EVENTHUB<br>PORTAL
             </div>
         </div>
 
         <?php if(isset($_SESSION['register_success'])): ?>
-            <div style="color: green; margin-bottom: 10px;">
+            <div style="color: #2e7d32; background: #e8f5e9; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; font-weight: bold;">
                 <?php echo $_SESSION['register_success']; unset($_SESSION['register_success']); ?>
             </div>
         <?php endif; ?>
 
-        <?php if(isset($_SESSION['register_error'])): ?>
-            <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; border: 1px solid #f5c6cb;">
-                <?php echo $_SESSION['register_error']; unset($_SESSION['register_error']); ?>
+        <?php if(isset($_SESSION['login_error'])): ?>
+            <div style="background: #ffebee; color: #d32f2f; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; font-weight: bold; border: 1px solid #ffcdd2;">
+                <?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?>
             </div>
         <?php endif; ?>
 
-        <?php if(isset($_SESSION['reset_success'])): ?>
-            <div style="color: green; margin-bottom: 10px;">
-                <?php echo $_SESSION['reset_success']; unset($_SESSION['reset_success']); ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if(isset($_SESSION['reset_error'])): ?>
-            <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; border: 1px solid #f5c6cb;">
-                <?php echo $_SESSION['reset_error']; unset($_SESSION['reset_error']); ?>
-            </div>
-        <?php endif; ?>
-        
-        <div id="loginForm">
-            <div class="login-title">Log In</div>
+        <div id="authShell">
             
-            <?php if (isset($_SESSION['login_error'])) { ?>
-                <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; border: 1px solid #f5c6cb;">
-                    <?php 
-                        echo $_SESSION['login_error']; 
-                        unset($_SESSION['login_error']); // Clear it so it doesn't stay forever
-                    ?>
-                </div>
-            <?php } ?>
-
-            <form class="auth-form" action="auth/login_register.php" method="POST">
-                <input type="hidden" name="login" value="1">
-                
-                <input type="email" name="email" class="auth-input" placeholder="Email" required>
-                <div class="password-field">
-                    <input type="password" name="password" id="loginPassword" class="auth-input" placeholder="Password" required>
-                    <button type="button" class="password-toggle" data-target="loginPassword" aria-label="Show password">
-                        <i class="fa-regular fa-eye" aria-hidden="true"></i>
-                    </button>
-                </div>
-
-                <div class="g-recaptcha" data-sitekey="6Ld9cecsAAAAAIQT71vTNpeqoq98QsWnSAm3BIGT" style="margin-bottom: 15px; display: flex; justify-content: center;"></div>
-
-                <button type="submit" class="auth-btn">Log In</button>
-            </form>
-            <div class="auth-links">
-                Not registered yet? <a href="#" onclick="toggleForms(); return false;">Sign up</a> Here.<br>
-                <a href="#" onclick="openResetModal(); return false;">Forgot password.</a>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; background: #f0f0f0; padding: 5px; border-radius: 20px;">
+                <button type="button" id="tabStaff" onclick="switchTab('staff')" style="flex: 1; padding: 10px; border-radius: 15px; border: none; background: #d4af37; color: #333; font-weight: bold; cursor: pointer; transition: 0.3s;">Staff Portal</button>
+                <button type="button" id="tabVisitor" onclick="switchTab('visitor')" style="flex: 1; padding: 10px; border-radius: 15px; border: none; background: transparent; color: #666; font-weight: bold; cursor: pointer; transition: 0.3s;">Visitor Access</button>
             </div>
-        </div>
 
-        <div id="registerForm" style="display: none;">
-            <div class="login-title">Register</div>
+            <div id="staffLoginForm">
+                <div class="login-title" style="text-align: center; margin-bottom: 20px;">Welcome to EventHub Portal</div>
+                <form class="auth-form" action="auth/login_register.php" method="POST">
+                    <input type="hidden" name="login_staff" value="1">
+                    
+                    <input type="email" name="email" class="auth-input" placeholder="Enter Username/Email" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;">
+                    
+                    <div class="password-field" style="position: relative; margin-bottom: 15px;">
+                        <input type="password" name="password" id="loginPassword" class="auth-input" placeholder="Enter Password" required style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                        <button type="button" class="password-toggle" data-target="loginPassword" style="position: absolute; right: 10px; top: 12px; background: none; border: none; cursor: pointer;">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+
+                    <div class="g-recaptcha" data-sitekey="6Ld9cecsAAAAAIQT71vTNpeqoq98QsWnSAm3BIGT" style="margin-bottom: 15px; display: flex; justify-content: center;"></div>
+
+                    <button type="submit" class="auth-btn" style="width: 100%; padding: 12px; background: #5a0505; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Login</button>
+                </form>
+                <div class="auth-links" style="text-align: center; margin-top: 15px; font-size: 13px;">
+                    Not registered yet? <a href="#" onclick="toggleRegister(); return false;" style="color: #d4af37;">Sign up</a> Here.<br>
+                    <a href="#" onclick="openResetModal(); return false;" style="color: #d4af37;">Forgot password.</a>
+                </div>
+            </div>
+
+            <div id="visitorLoginForm" style="display: none;">
+                <div class="login-title" style="text-align: center; margin-bottom: 20px;">Welcome to EventHub Portal</div>
+                <form class="auth-form" action="auth/login_register.php" method="POST">
+                    <input type="hidden" name="login_visitor" value="1">
+                    
+                    <input type="text" name="visitor_name" class="auth-input" placeholder="Enter Name" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;">
+                    
+                    <input type="text" name="invitation_code" class="auth-input" placeholder="Enter Invitation Code" required style="width: 100%; padding: 12px; margin-bottom: 25px; border: 1px solid #ccc; border-radius: 8px;">
+
+                    <button type="submit" class="auth-btn" style="width: 100%; padding: 12px; background: #5a0505; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Login</button>
+                </form>
+            </div>
+
+        </div> <div id="registerForm" style="display: none;">
+            <div class="login-title" style="text-align: center; margin-bottom: 20px;">Register New Account</div>
             <form class="auth-form" action="auth/login_register.php" method="POST">
                 <input type="hidden" name="register" value="1">
                 
-                <input type="text" name="name" class="auth-input" placeholder="Name" required>
+                <input type="text" name="name" class="auth-input" placeholder="Enter Name" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;">
+                <input type="email" name="email" class="auth-input" placeholder="Enter Email" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;">
                 
-                <input type="email" name="email" class="auth-input" placeholder="Email" required>
-                
-                <select name="major" class="auth-input" required>
-                    <option value="">Select Major</option>
-                    <option value="Information Technology">Information Technology</option>
-                    <option value="Software Engineering">Software Engineering</option>
-                </select>
-                
-                <div class="password-field">
-                    <input type="password" name="password" id="registerPassword" class="auth-input" placeholder="Password" required>
-                    <button type="button" class="password-toggle" data-target="registerPassword" aria-label="Show password">
-                        <i class="fa-regular fa-eye" aria-hidden="true"></i>
-                    </button>
+                <div class="password-field" style="position: relative; margin-bottom: 15px;">
+                    <input type="password" name="password" id="registerPassword" class="auth-input" placeholder="Enter Password" required style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
                 </div>
-                <div class="password-strength" id="registerStrength">
-                    <div>Password must be at least 8 chars, include upper, lower, and a number.</div>
-                    <div class="password-strength-bar">
-                        <div class="password-strength-fill" id="registerStrengthFill"></div>
-                    </div>
+
+                <div class="password-field" style="position: relative; margin-bottom: 15px;">
+                    <input type="password" name="confirm_password" class="auth-input" placeholder="Confirm Password" required style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
                 </div>
                 
-                <button type="submit" class="auth-btn">Sign Up</button>
+                <button type="submit" class="auth-btn" style="width: 100%; padding: 12px; background: #5a0505; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Sign Up</button>
             </form>
-            <div class="auth-links">
-                Already have an account? <a href="#" onclick="toggleForms(); return false;">Back to Login Page</a>
+            <div class="auth-links" style="text-align: center; margin-top: 15px; font-size: 13px;">
+                Already have an account? <a href="#" onclick="toggleRegister(); return false;" style="color: #d4af37;">Back to Login</a>
             </div>
         </div>
+
     </div>
 </div>
-
-<div id="resetModal" class="custom-modal">
-    <div class="custom-modal-content" style="max-width: 400px; text-align: left;">
-        <span class="close-modal" onclick="closeResetModal()">&times;</span>
-        <div class="modal-body">
-            <h2 class="modal-name" style="margin-bottom: 12px;">Reset Password</h2>
-            <p class="modal-text" style="margin-bottom: 18px; color: #666;">
-                Enter your email and choose a new password.
-            </p>
-            <form class="auth-form" action="auth/self_reset.php" method="POST">
-                <input type="email" name="email" class="auth-input" placeholder="Email" required>
-                <div class="password-field">
-                    <input type="password" name="password" id="resetPassword" class="auth-input" placeholder="New Password" required>
-                    <button type="button" class="password-toggle" data-target="resetPassword" aria-label="Show password">
-                        <i class="fa-regular fa-eye" aria-hidden="true"></i>
-                    </button>
-                </div>
-                <div class="password-strength" id="resetStrength">
-                    <div>Password must be at least 8 chars, include upper, lower, and a number.</div>
-                    <div class="password-strength-bar">
-                        <div class="password-strength-fill" id="resetStrengthFill"></div>
-                    </div>
-                </div>
-                <div class="password-field">
-                    <input type="password" name="confirm_password" id="resetConfirmPassword" class="auth-input" placeholder="Confirm Password" required>
-                    <button type="button" class="password-toggle" data-target="resetConfirmPassword" aria-label="Show password">
-                        <i class="fa-regular fa-eye" aria-hidden="true"></i>
-                    </button>
-                </div>
-                <button type="submit" class="auth-btn">Reset Password</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<?php
-    $active_form = $_SESSION['active_form'] ?? '';
-    unset($_SESSION['active_form']);
-?>
 
 <script>
-    // Simple JS to toggle between Login and Register views without reloading    
-    function toggleForms() {
-        const login = document.getElementById('loginForm');
+    // Tab Switcher Logic
+    function switchTab(tabType) {
+        const staffForm = document.getElementById('staffLoginForm');
+        const visitorForm = document.getElementById('visitorLoginForm');
+        const tabStaff = document.getElementById('tabStaff');
+        const tabVisitor = document.getElementById('tabVisitor');
+
+        if (tabType === 'staff') {
+            staffForm.style.display = 'block';
+            visitorForm.style.display = 'none';
+            tabStaff.style.background = '#d4af37';
+            tabStaff.style.color = '#333';
+            tabVisitor.style.background = 'transparent';
+            tabVisitor.style.color = '#666';
+        } else {
+            staffForm.style.display = 'none';
+            visitorForm.style.display = 'block';
+            tabVisitor.style.background = '#d4af37';
+            tabVisitor.style.color = '#333';
+            tabStaff.style.background = 'transparent';
+            tabStaff.style.color = '#666';
+        }
+    }
+
+    // Toggle Register Logic
+    function toggleRegister() {
+        const authShell = document.getElementById('authShell');
         const register = document.getElementById('registerForm');
         
-        if (login.style.display === 'none') {
-            login.style.display = 'block';
+        if (authShell.style.display === 'none') {
+            authShell.style.display = 'block';
             register.style.display = 'none';
         } else {
-            login.style.display = 'none';
+            authShell.style.display = 'none';
             register.style.display = 'block';
         }
     }
 
-    function evaluatePassword(value) {
-        const checks = {
-            length: value.length >= 8,
-            lower: /[a-z]/.test(value),
-            upper: /[A-Z]/.test(value),
-            number: /[0-9]/.test(value)
-        };
-
-        const score = Object.values(checks).filter(Boolean).length;
-        return { checks, score };
-    }
-
-    function updateStrength(inputId, fillId) {
-        const input = document.getElementById(inputId);
-        const fill = document.getElementById(fillId);
-        if (!input || !fill) return false;
-
-        const { checks, score } = evaluatePassword(input.value);
-        const percent = Math.min(100, (score / 4) * 100);
-        fill.style.width = percent + '%';
-        fill.classList.remove('medium', 'strong');
-        if (score >= 3) {
-            fill.classList.add('medium');
-        }
-        if (score === 4) {
-            fill.classList.add('strong');
-        }
-
-        return checks.length && checks.lower && checks.upper && checks.number;
-    }
-
-    function bindStrength(inputId, fillId, formSelector) {
-        const input = document.getElementById(inputId);
-        const form = document.querySelector(formSelector);
-        if (!input || !form) return;
-
-        input.addEventListener('input', () => {
-            updateStrength(inputId, fillId);
-        });
-
-        form.addEventListener('submit', (event) => {
-            const isStrong = updateStrength(inputId, fillId);
-            if (!isStrong) {
-                event.preventDefault();
-                alert('Please choose a stronger password.');
-            }
-        });
-    }
-
-    bindStrength('registerPassword', 'registerStrengthFill', '#registerForm form');
-    bindStrength('resetPassword', 'resetStrengthFill', '#resetModal form');
-
+    // Retain password toggle JS from your original code here...
     document.querySelectorAll('.password-toggle').forEach((button) => {
         button.addEventListener('click', () => {
             const targetId = button.getAttribute('data-target');
@@ -236,47 +149,11 @@ require_once 'components/header.php';
             const isPassword = input.type === 'password';
             input.type = isPassword ? 'text' : 'password';
             const iconClass = isPassword ? 'fa-eye-slash' : 'fa-eye';
-            button.innerHTML = `<i class="fa-regular ${iconClass}" aria-hidden="true"></i>`;
-            button.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            button.innerHTML = `<i class="fa-regular ${iconClass}"></i>`;
         });
     });
-
-    function openResetModal() {
-        document.getElementById('resetModal').classList.add('show');
-    }
-
-    function closeResetModal() {
-        document.getElementById('resetModal').classList.remove('show');
-    }
-
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('resetModal');
-        if (event.target === modal) {
-            closeResetModal();
-        }
-    });
-
-    const activeForm = "<?php echo $active_form; ?>";
-    if (activeForm === 'register') {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('registerForm').style.display = 'block';
-    }
 </script>
 
-<script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-              console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            }, err => {
-              console.log('ServiceWorker registration failed: ', err);
-            });
-        });
-      }
-    </script>
-
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
 </body>
 </html>

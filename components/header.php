@@ -8,16 +8,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Club Management System</title>
-
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#5a0505">
-    
-    <link rel="stylesheet" href="<?php echo $asset_prefix; ?>assets/css/style.min.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>EventHub Portal</title>
 
     <link rel="manifest" href="<?php echo $asset_prefix; ?>manifest.json">
-    <meta name="theme-color" content="#600000">
+    <meta name="theme-color" content="#5a0505">
+    
+    <link rel="stylesheet" href="<?php echo $asset_prefix; ?>assets/css/style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Shrikhand&display=swap" rel="stylesheet">
 
     <script>
       if ('serviceWorker' in navigator) {
@@ -40,50 +38,36 @@
                 <i class="fas fa-bars"></i>
             </button>
             
-            <h1 class="page-title" id="page-title">
+            <h1 class="page-title" id="page-title" style="text-transform: uppercase;">
                 <?php
-                    // Dynamic page title based on file
+                    // Dynamic page title based on the active file
                     $page = basename($_SERVER['PHP_SELF']);
-                    if ($page === 'inquiries_page.php') {
-                        echo 'Inquiries List';
+                    if ($page === 'visitors_page.php') {
+                        echo 'Events List';
+                    } elseif ($page === 'contact.php') {
+                        echo 'Contact Us';
+                    } elseif ($page === 'admin_page.php') {
+                        echo 'Request List';
                     } else {
-                        echo 'Members List';
+                        echo 'EventHub Portal';
                     }
                 ?>
             </h1>
 
             <div class="topbar-profile">
-    <span class="profile-name">
-        <?php 
-            // Check if the current file is inquiries_page.php
-            if (basename($_SERVER['PHP_SELF']) === 'inquiries_page.php') {
-                echo 'Admin';
-            } else {
-                echo htmlspecialchars($_SESSION['name'] ?? 'Visitor');
-            }
-        ?>
-    </span>
-            <div class="profile-avatar">
-                <?php 
-                    $raw_pic = $_SESSION['profile_pic'] ?? '';
-                    $pic_name = !empty($raw_pic) ? basename($raw_pic) : '';
-                    $pic_path = $asset_prefix . 'assets/images/' . $pic_name;
-
-                    if (!empty($pic_name) && file_exists($pic_path)): ?>
-                        <img src="<?php echo htmlspecialchars($pic_path); ?>" 
-                            alt="Profile" 
-                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                    <?php else: 
-                        // If it's inquiries_page, show 'A' for Admin initials, otherwise use session name
-                        if (basename($_SERVER['PHP_SELF']) === 'inquiries_page.php') {
-                            echo 'A';
-                        } else {
-                            echo strtoupper(mb_substr($_SESSION['name'] ?? 'V', 0, 1)); 
-                        }
-                    endif; 
-                ?>
+                <span class="profile-name">
+                    <?php 
+                        $displayName = htmlspecialchars($_SESSION['name'] ?? 'Visitor');
+                        $role = htmlspecialchars($_SESSION['role'] ?? '');
+                        echo $displayName . ($role ? ' ' . $role : '');
+                    ?>
+                </span>
+                <div class="profile-avatar">
+                    <?php 
+                        echo strtoupper(mb_substr($_SESSION['name'] ?? 'V', 0, 1)); 
+                    ?>
+                </div>
             </div>
-        </div>
         </header>
 
         <div class="overlay"></div>

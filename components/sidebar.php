@@ -1,47 +1,25 @@
+<?php
+    // Get the current file name so we know which menu item should be active
+    $current_page = basename($_SERVER['PHP_SELF']);
+?>
 <aside class="sidebar">
-    <div class="sidebar-brand">
-        <div class="brand-logos">
-            <img src="../assets/images/unijipng.png" alt="Uni logo">
-            <img src="../assets/images/jiclogopng.png" alt="JIC logo">
+    <div class="sidebar-brand" style="background: #ffffff; color: #5a0505; border-radius: 8px; margin-bottom: 20px; padding: 15px; text-align: left;">
+        <div class="brand-text" style="font-family: 'Shrikhand', cursive; font-size: 16px; line-height: 1.2;">
+            <strong>EVENTHUB</strong><br>
+            <strong>PORTAL</strong>
         </div>
-        <div class="brand-divider" aria-hidden="true"></div>
-
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <div class="brand-logos">
-                    <img src="../assets/images/unijipng.png" alt="Uni logo">
-                    <img src="../assets/images/jiclogopng.png" alt="JIC logo">
-                </div>
-                <div class="brand-divider" aria-hidden="true"></div>
-                <div class="brand-text">
-                    <span>ROOM</span>
-                    <span>RESERVATION</span>
-                    <span>SYSTEM</span>
-                </div>
-            </div>
-
-            <nav class="sidebar-nav">
-                <a href="javascript:void(0);" onclick="switchView('members')" id="nav-members" class="nav-link active">
-                    <i class="fas fa-users"></i> Members List
-                </a>
+    </div>
+    
+    <div class="sidebar-nav">
+        <a href="../pages/visitors_page.php" class="nav-link <?php echo ($current_page == 'visitors_page.php') ? 'active' : ''; ?>">
+            <i class="fas fa-home"></i> Events List
+        </a>
+        <a href="../pages/contact.php" class="nav-link <?php echo ($current_page == 'contact.php') ? 'active' : ''; ?>">
+            <i class="fas fa-envelope"></i> Contact Us
+        </a>
         
-                <a href="javascript:void(0);" onclick="switchView('meetings')" id="nav-meetings" class="nav-link">
-                    <i class="fas fa-calendar-alt"></i> Meeting List
-                </a>
-
-                <?php if (isset($isAdmin) && isset($isManager) && ($isAdmin || $isManager)): ?>
-                    <a href="javascript:void(0);" onclick="switchView('requests')" id="nav-requests" class="nav-link">
-                        <i class="fas fa-envelope-open-text"></i> Requests
-                    </a>
-                <?php endif; ?>
-
-                <?php if (isset($isAdmin) && $isAdmin): ?>
-                    <a href="javascript:void(0);" onclick="switchView('logs')" id="nav-logs" class="nav-link">
-                        <i class="fas fa-file-alt"></i> Activity Logs
-                    </a>
-                <?php endif; ?>
-
-                <a href="#" class="nav-link nav-spacer"><i class="fas fa-gear"></i> Settings</a>
-                <a href="../index.php" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log out</a>
-            </nav>
-        </aside>
+        <div class="nav-spacer"></div>
+        <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+        <a href="../auth/logout.php" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log out</a>
+    </div>
+</aside>

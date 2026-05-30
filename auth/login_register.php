@@ -1,180 +1,127 @@
 <?php
-//starting a session to save user information across pages
 session_start();
-// Load database configuration and connection
 require_once __DIR__ . '/../components/config.php';
-/** @var mysqli $conn */
 
-function is_strong_password($password) {
-    return strlen($password) >= 8
-        && preg_match('/[a-z]/', $password)
-        && preg_match('/[A-Z]/', $password)
-        && preg_match('/[0-9]/', $password);
-}
+// --- 1. STAFF / ADMIN LOGIN ---
+if (isset($_POST['login_staff'])) {
+    // (Optional) Recaptcha Check here if you want to keep it
 
-//this handles user registration
-if (isset($_POST['register'])) {
-    //get data from the registration form
-    $name = $_POST['name'];
-    $email = $_POST['email'];  
-    $password_raw = $_POST['password'] ?? '';
-
-    if (!is_strong_password($password_raw)) {
-        $_SESSION['register_error'] = 'Password must be at least 8 chars and include upper, lower, and a number.';
-        $_SESSION['active_form'] = 'register';
-        header("Location: ../index.php");
-        exit();
-    }
-
-    //hashing the password for security
-    $password = password_hash($password_raw, PASSWORD_DEFAULT); 
-    
-    //default role for new users
-    $role = 'Member'; 
-    
-    // Get the major data from form through dropdown option
-    $major = $_POST['major'];
-
-    //for assigning random avatar to new user as profile picture
-    $avatar_list = [
-        'avatar1.jpg', 'avatar2.jpg', 'avatar3.jpg', 
-        'avatar4.jpg', 'avatar5.jpg', 'avatar6.jpg'
-    ];
-    //randomize avatar from the list
-    $random_key = array_rand($avatar_list);
-    $profile_pic = $avatar_list[$random_key];
-
-    //this checks if email already exists in database - club_db
-    $check_stmt = $conn->prepare("SELECT email FROM user WHERE email = ?");
-    $check_stmt->bind_param("s", $email);
-    $check_stmt->execute();
-    $check_stmt->store_result();
-
-    //show error if email already exists
-    if ($check_stmt->num_rows > 0) {
-        $_SESSION['register_error'] = "Email already exists.";
-        $_SESSION['active_form'] = 'register';
-        $check_stmt->close(); 
-        header("Location: ../index.php");
-        exit();
-    } else {
-        //ensure email is unique, then proceed with registration
-        $check_stmt->close(); 
-
-        //save new user to database in user table
-        $user_stmt = $conn->prepare("INSERT INTO user (name, email, password, major, profile_pic) VALUES (?, ?, ?, ?, ?)");
-        $user_stmt->bind_param("sssss", $name, $email, $password, $major, $profile_pic);
-
-        if ($user_stmt->execute()) {
-            //get user id of new user account
-            $new_user_id = $user_stmt->insert_id;
-
-            //assign user role in database in role table
-            $role_stmt = $conn->prepare("INSERT INTO role (user_id, role) VALUES (?, ?)");
-            $role_stmt->bind_param("is", $new_user_id, $role);
-            $role_stmt->execute();
-            $role_stmt->close();
-
-            //log this registration activity
-            if (function_exists('logActivity')) {
-                logActivity($conn, $new_user_id, $name, 'Register', 'User registered new account.');
-            }
-        }
-        $user_stmt->close();
-    }
-
-    $_SESSION['register_success'] = "Account created! You can now log in.";
-    //redirect back to home page after registration
-    header("Location: ../index.php");
-    exit();
-}
-
-//this is for handling user login
-if (isset($_POST['login'])) {
-
-    // --- reCAPTCHA Verification ---
-    $recaptcha_secret = $recaptcha_secret ?? '';
-    if (!$recaptcha_secret) {
-        $_SESSION['login_error'] = "CAPTCHA is not configured. Please contact the administrator.";
-        $_SESSION['active_form'] = 'login';
-        header("Location: ../index.php");
-        exit();
-    }
-    $recaptcha_response = $_POST['g-recaptcha-response'] ?? '';
-
-    // Verify the response with Google's API
-    $verify_response = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
-    $response_data = json_decode($verify_response);
-
-    if (!$response_data->success) {
-        // If CAPTCHA fails or is ignored, stop login and show error
-        $_SESSION['login_error'] = "Please complete the CAPTCHA verification.";
-        $_SESSION['active_form'] = 'login';
-        header("Location: ../index.php");
-        exit();
-    }
-
-    //get email and password from login form
-    $email = $_POST['email'];
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    //search for user with this email in database in user table
     $stmt = $conn->prepare("SELECT * FROM user WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    //if user found, check if password matches 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
-        //verify if password match the hashed password in database
+        
         if (password_verify($password, $user['password'])) {
             $user_id = $user['id'];
             
-            //get the user's role
-            $stmt_role = $conn->prepare("SELECT role FROM role WHERE user_id = ?");
+            // Get the user's role and associated event_id
+            $stmt_role = $conn->prepare("SELECT role, event_id FROM role WHERE user_id = ?");
             $stmt_role->bind_param("i", $user_id);
             $stmt_role->execute();
             $result_role = $stmt_role->get_result();
 
-            //extracts user's role
             if ($result_role->num_rows > 0) {
                 $row = $result_role->fetch_assoc();
-                $user_role = $row['role'];
+                $_SESSION['role'] = $row['role'];
+                $_SESSION['event_id'] = $row['event_id']; // Crucial for Staff to manage only their event
             } else {
-                $user_role = 'member';
+                $_SESSION['role'] = 'Staff'; // Fallback
             }
-            $stmt_role->close();
-
-            //this stores user information in session variables
+            
             $_SESSION['id'] = $user['id'];      
             $_SESSION['name'] = $user['name'];  
             $_SESSION['email'] = $user['email']; 
-            $_SESSION['role'] = $user_role; 
-            $_SESSION['weak_password'] = !is_strong_password($password);
-
-            //log this login activity
-            if (function_exists('logActivity')) {
-                logActivity($conn, $user['id'], $user['name'], 'Login', 'User logged in.');
-            }
-
-            // Route to the correct page in the /pages/ folder
-            if (strtolower($user_role) == 'admin') {
-                header("Location: ../pages/user_page.php");
-            } elseif (strtolower($user_role) == 'manager') {
-                header("Location: ../pages/user_page.php");
-            } else {
-                header("Location: ../pages/user_page.php");
-            }
+            
+            header("Location: ../pages/admin_page.php"); // Or user_page.php
             exit();
         } 
     }
     
-    //when Login failed, show this error message
     $_SESSION['login_error'] = "Invalid email or password.";
-    $_SESSION['active_form'] = 'login';
-    
-    //then redirect back to home page to show error
+    header("Location: ../index.php");
+    exit();
+}
+
+// --- 2. VISITOR CODE LOGIN ---
+if (isset($_POST['login_visitor'])) {
+    $visitor_name = trim($_POST['visitor_name']);
+    $invitation_code = trim($_POST['invitation_code']);
+
+    // Check if the code exists in the database
+    $stmt = $conn->prepare("SELECT * FROM invitation_codes WHERE code = ?");
+    $stmt->bind_param("s", $invitation_code);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $code_data = $result->fetch_assoc();
+        
+        // Code is valid! Log them in as a temporary visitor session
+        $_SESSION['role'] = 'Visitor';
+        $_SESSION['name'] = $visitor_name;
+        $_SESSION['event_id'] = $code_data['event_id']; // Tells the app WHICH event they are visiting
+        $_SESSION['invitation_code'] = $invitation_code;
+
+        // Redirect to the visitor dashboard
+        header("Location: ../pages/visitors_page.php");
+        exit();
+    } else {
+        $_SESSION['login_error'] = "Invalid Invitation Code. Please try again.";
+        header("Location: ../index.php");
+        exit();
+    }
+}
+
+// --- 3. REGISTRATION (For Staff) ---
+if (isset($_POST['register'])) {
+    $name = $_POST['name'];
+    $email = $_POST['email'];  
+    $password_raw = $_POST['password'];
+
+    // Basic password validation
+    if (strlen($password_raw) < 8) {
+        $_SESSION['login_error'] = 'Password must be at least 8 characters.';
+        header("Location: ../index.php");
+        exit();
+    }
+
+    $password = password_hash($password_raw, PASSWORD_DEFAULT); 
+    $profile_pic = 'avatar1.jpg'; // Default
+
+    // Check email
+    $check_stmt = $conn->prepare("SELECT email FROM user WHERE email = ?");
+    $check_stmt->bind_param("s", $email);
+    $check_stmt->execute();
+    $check_stmt->store_result();
+
+    if ($check_stmt->num_rows > 0) {
+        $_SESSION['login_error'] = "Email already exists.";
+        header("Location: ../index.php");
+        exit();
+    } else {
+        $user_stmt = $conn->prepare("INSERT INTO user (name, email, password, profile_pic) VALUES (?, ?, ?, ?)");
+        $user_stmt->bind_param("ssss", $name, $email, $password, $profile_pic);
+
+        if ($user_stmt->execute()) {
+            $new_user_id = $user_stmt->insert_id;
+            $role = 'Staff';
+            
+            // NOTE: We assign event_id = 1 here so it passes the Database CHECK constraint we added!
+            $event_id = 1; 
+
+            $role_stmt = $conn->prepare("INSERT INTO role (user_id, role, event_id) VALUES (?, ?, ?)");
+            $role_stmt->bind_param("isi", $new_user_id, $role, $event_id);
+            $role_stmt->execute();
+        }
+    }
+
+    $_SESSION['register_success'] = "Account created! You can now log in.";
     header("Location: ../index.php");
     exit();
 }

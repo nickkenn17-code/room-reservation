@@ -1,37 +1,18 @@
 <?php 
 session_start();
 require_once '../components/config.php'; 
-require_once '../components/header.php'; 
-// require_once '../components/sidebar.php';
 
 // Fetch the active events to populate the dropdown menu
-$events_sql = "SELECT id, event_name FROM dummy_events";
+$events_sql = "SELECT id, event_name FROM event_list";
 $events_result = $conn->query($events_sql);
+
+// Pull in the centralized UI
+require_once '../components/header.php'; 
+require_once '../components/sidebar.php';
 ?>
 
-<!-- masih copy from the visitors page doang -->
-<aside class="sidebar">
-            <div class="sidebar-brand">
-                <div class="brand-text">
-                    <strong>EVENTHUB</strong>
-                    <strong>PORTAL</strong>
-                </div>
-            </div>
-            
-            <div class="sidebar-nav">
-                <a href="visitors_page.php" class="nav-link"><i class="fas fa-home"></i> Events List</a>
-                <a href="../pages/contact.php" class="nav-link active"><i class="fas fa-envelope"></i> Contact Us</a>
-                <div class="nav-spacer"></div>
-                <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
-                <a href="../auth/logout.php" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log out</a>
-            </div>
-</aside>
-    
-
-
-
 <div class="main-content">
-    <div style="display: flex; justify-content: center; align-items: flex-start; width: 100%; padding-top: 90px;">
+    <div style="display: flex; justify-content: center; align-items: flex-start; width: 100%; padding-top: 40px;">
         <div class="contact-container" style="position: relative; z-index: 10; width: 100%; max-width: 600px; margin: 0; padding: 30px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(90, 5, 5, 0.1);">
             
             <h2 style="font-family: 'Shrikhand', cursive; color: #5a0505; text-align: center; margin-bottom: 10px;">Get in Touch</h2>
@@ -79,6 +60,5 @@ $events_result = $conn->query($events_sql);
     </div>
 </div>
 
-<?php 
-// Include your footer if you have one
-?>
+</body>
+</html>
