@@ -42,15 +42,14 @@
                 <?php
                     // Dynamic page title based on the active file
                     $page = basename($_SERVER['PHP_SELF']);
-                    if ($page === 'visitors_page.php') {
-                        echo 'Events List';
-                    } elseif ($page === 'contact.php') {
-                        echo 'Contact Us';
-                    } elseif ($page === 'admin_page.php') {
-                        echo 'Request List';
-                    } else {
-                        echo 'EventHub Portal';
-                    }
+                    $header_title = match($page) {
+                        'visitors_page.php', 'staff_page.php' => 'EVENT LIST',
+                        'inquiries_page.php' => 'INQUIRIES LIST',
+                        'generate_code.php' => 'INVITATION CODE',
+                        'contact.php' => 'CONTACT US',
+                        default => 'EVENTHUB PORTAL'
+                    };
+                    echo htmlspecialchars($header_title);
                 ?>
             </h1>
 

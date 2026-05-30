@@ -127,6 +127,11 @@ if (empty($faq_dataset)) {
 const dynamicFaqDataset = <?php echo json_encode($faq_dataset); ?>;
 
 function toggleFaqModal() {
+    const eventModal = document.getElementById('eventDetailModal');
+    if (eventModal) {
+        eventModal.style.display = 'none';
+    }
+
     document.getElementById('globalFaqModal').classList.toggle('active');
 }
 

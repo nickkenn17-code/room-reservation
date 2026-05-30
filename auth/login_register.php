@@ -38,7 +38,7 @@ if (isset($_POST['login_staff'])) {
             $_SESSION['name'] = $user['name'];  
             $_SESSION['email'] = $user['email']; 
             
-            header("Location: ../pages/admin_page.php"); // Or user_page.php
+            header("Location: ../pages/staff_page.php"); 
             exit();
         } 
     }

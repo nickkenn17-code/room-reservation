@@ -11,9 +11,26 @@ require_once '../components/header.php';
 require_once '../components/sidebar.php';
 ?>
 
-<div class="main-content">
-    <div style="display: flex; justify-content: center; align-items: flex-start; width: 100%; padding-top: 40px;">
-        <div class="contact-container" style="position: relative; z-index: 10; width: 100%; max-width: 600px; margin: 0; padding: 30px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(90, 5, 5, 0.1);">
+<div class="main-content" style="
+    margin-left: 250px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: flex-start; 
+    padding-top: 50px;       /* Reduced from 80px to move it up */
+    width: calc(100% - 250px); 
+    height: 100vh;           /* Changed from min-height to height */
+    overflow: hidden;        /* Ensures no scroll bar appears */
+">
+    
+    <div class="contact-container" style="
+        position: relative; 
+        z-index: 10; 
+        width: 100%; 
+        max-width: 600px; 
+        padding: 30px; 
+        background: #ffffff; 
+        border-radius: 12px; 
+        box-shadow: 0 4px 15px rgba(90, 5, 5, 0.1);">
             
             <h2 style="font-family: 'Shrikhand', cursive; color: #5a0505; text-align: center; margin-bottom: 10px;">Get in Touch</h2>
             <p style="font-family: 'Montserrat', sans-serif; text-align: center; color: #666; margin-bottom: 25px;">Select an event and send us your questions!</p>

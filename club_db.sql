@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3307
--- Generation Time: May 30, 2026 at 10:55 AM
+-- Host: 127.0.0.1
+-- Generation Time: May 30, 2026 at 05:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -135,7 +135,7 @@ CREATE TABLE `event_list` (
 --
 
 INSERT INTO `event_list` (`id`, `event_name`, `date`, `start_time`, `end_time`, `description`, `created_at`) VALUES
-(1, 'Cultural Festival 2026', '2026-08-15', '09:00:00', '17:00:00', 'An all-day exhibition featuring traditional foods, performances, and art from over 15 different regions. General admission is free for students.', '2026-05-29 07:57:01'),
+(1, 'Cultural Festival 2026', '2026-08-15', '10:00:00', '17:00:00', 'An all-day exhibition featuring traditional foods, performances, and art from over 15 different regions. General admission is free for students.', '2026-05-29 07:57:01'),
 (2, 'Tech & AI Summit', '2026-09-10', '13:00:00', '17:00:00', 'A professional gathering of software engineers and industry leaders discussing the future of artificial intelligence and progressive web applications.', '2026-05-29 07:57:01'),
 (3, 'University Open House', '2026-10-05', '10:00:00', '17:00:00', 'Welcome to the campus! Explore the facilities, meet the faculty, and learn about the Information System and Software Engineering programs.', '2026-05-29 07:57:01');
 
@@ -178,7 +178,6 @@ INSERT INTO `faq_chatbot` (`id`, `category`, `keywords`, `bot_response`, `create
 CREATE TABLE `invitation_codes` (
   `id` int(11) NOT NULL,
   `code` varchar(20) NOT NULL,
-  `event_id` int(11) NOT NULL,
   `generated_by` int(20) UNSIGNED NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -187,9 +186,11 @@ CREATE TABLE `invitation_codes` (
 -- Dumping data for table `invitation_codes`
 --
 
-INSERT INTO `invitation_codes` (`id`, `code`, `event_id`, `generated_by`, `created_at`) VALUES
-(1, 'QWER1', 1, 1, '2026-05-30 06:37:03'),
-(2, 'QWER2', 2, 1, '2026-05-30 06:37:03');
+INSERT INTO `invitation_codes` (`id`, `code`, `generated_by`, `created_at`) VALUES
+(1, 'QWER1', 1, '2026-05-30 06:37:03'),
+(2, 'QWER2', 1, '2026-05-30 06:37:03'),
+(6, 'FHA59YGRYX', 1, '2026-05-30 14:29:26'),
+(7, 'C6WJ4CBHPE', 11, '2026-05-30 15:10:08');
 
 -- --------------------------------------------------------
 
@@ -202,7 +203,7 @@ CREATE TABLE `role` (
   `role` enum('Admin','Staff') NOT NULL DEFAULT 'Staff',
   `user_id` int(20) UNSIGNED NOT NULL,
   `event_id` int(11) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `role`
@@ -211,7 +212,8 @@ CREATE TABLE `role` (
 INSERT INTO `role` (`id`, `role`, `user_id`, `event_id`) VALUES
 (1, 'Admin', 1, NULL),
 (2, 'Staff', 2, 1),
-(3, 'Staff', 3, 1);
+(3, 'Staff', 3, 1),
+(4, 'Staff', 11, 2);
 
 -- --------------------------------------------------------
 
@@ -241,7 +243,8 @@ INSERT INTO `user` (`id`, `name`, `email`, `password`, `profile_pic`) VALUES
 (7, 'jj', 'jj@gmail.com', '$2y$10$M8NCrWyxC9DNbPVzs/ujweNE8LBtMMw3/4TJjs8y1oJDsnNYtVL9y', 'avatar3.jpg'),
 (8, 'kenny', 'kenny@gmail.com', '$2y$10$5wOezxdUD6YBGcYcbDCzJuN3knFEEQq7YY33eWaCToAMMvTWzpbwG', 'avatar2.jpg'),
 (9, 'Kenny', 'kenny@mail.com', '$2y$10$Ts2XTc9pvI.dRw4mCSQE5OBpcMHL/AG1HFmkmneJJ4Av5ZEmvg1ci', 'avatar2.jpg'),
-(10, 'Nicholas Kenny', 'kenny1@mail.com', '$2y$10$HCdAC6OW.8MgugHRSxONzup1lWACAKdkOhNPbuxl0fUU0nkZ2dbtO', 'avatar4.jpg');
+(10, 'Nicholas Kenny', 'kenny1@mail.com', '$2y$10$HCdAC6OW.8MgugHRSxONzup1lWACAKdkOhNPbuxl0fUU0nkZ2dbtO', 'avatar4.jpg'),
+(11, 'Stella Gunawan', 'stella@gmail.com', '$2y$10$VB2fR3okH1ids9CMPbKTceEVr3yaX9CKy4KuqjV5xlDto9Sw1r4T6', 'avatar1.jpg');
 
 -- --------------------------------------------------------
 
@@ -259,6 +262,13 @@ CREATE TABLE `visitor_inquiries` (
   `status` enum('Pending','Answered') DEFAULT 'Pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `visitor_inquiries`
+--
+
+INSERT INTO `visitor_inquiries` (`id`, `visitor_name`, `visitor_email`, `event_id`, `message`, `admin_reply`, `status`, `created_at`) VALUES
+(1, 'notstella', 'stellaaa@gmail.com', 1, 'where is the noodle stall', NULL, 'Pending', '2026-05-30 15:17:57');
 
 --
 -- Indexes for dumped tables
@@ -289,7 +299,6 @@ ALTER TABLE `faq_chatbot`
 ALTER TABLE `invitation_codes`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `code` (`code`),
-  ADD KEY `event_id` (`event_id`),
   ADD KEY `generated_by` (`generated_by`);
 
 --
@@ -339,25 +348,25 @@ ALTER TABLE `faq_chatbot`
 -- AUTO_INCREMENT for table `invitation_codes`
 --
 ALTER TABLE `invitation_codes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `visitor_inquiries`
 --
 ALTER TABLE `visitor_inquiries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
@@ -373,7 +382,6 @@ ALTER TABLE `event_images`
 -- Constraints for table `invitation_codes`
 --
 ALTER TABLE `invitation_codes`
-  ADD CONSTRAINT `invitation_codes_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `event_list` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `invitation_codes_ibfk_2` FOREIGN KEY (`generated_by`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 
 --
