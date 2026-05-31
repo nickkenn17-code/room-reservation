@@ -28,6 +28,12 @@ require_once 'components/header.php';
             </div>
         <?php endif; ?>
 
+        <?php if(isset($_GET['timeout']) && $_GET['timeout'] == 1): ?>
+            <div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; font-weight: bold; border: 1px solid #ffeeba;">
+                Your session has expired due to inactivity. Please log in again.
+            </div>
+        <?php endif; ?>
+
         <div id="authShell">
             
             <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; background: #f0f0f0; padding: 5px; border-radius: 20px;">
