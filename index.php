@@ -90,7 +90,7 @@ require_once 'components/header.php';
                 </div>
 
                 <div class="password-strength" id="registerStrength" style="margin-bottom: 15px; font-size: 11px; color: #666; font-family: 'Montserrat', sans-serif;">
-                    <div>Password must be at least 8 chars, include upper, lower, and a number.</div>
+                    <div>Password must be at least 8 chars, include upper, lower, a number, and a symbol.</div>
                     <div class="password-strength-bar" style="height: 4px; background: #e0e0e0; margin-top: 5px; border-radius: 2px; width: 100%;">
                         <div class="password-strength-fill" id="registerStrengthFill" style="height: 100%; width: 0%; background: #d32f2f; border-radius: 2px; transition: 0.3s;"></div>
                     </div>
@@ -131,7 +131,7 @@ require_once 'components/header.php';
             </div>
             
             <div class="password-strength" id="resetStrength" style="margin-bottom: 15px; font-size: 11px; color: #666; font-family: 'Montserrat', sans-serif;">
-                <div>Password must be at least 8 chars, include upper, lower, and a number.</div>
+                <div>Password must be at least 8 chars, include upper, lower, a number, and a symbol.</div>
                 <div class="password-strength-bar" style="height: 4px; background: #e0e0e0; margin-top: 5px; border-radius: 2px; width: 100%;">
                     <div class="password-strength-fill" id="resetStrengthFill" style="height: 100%; width: 0%; background: #d32f2f; border-radius: 2px; transition: 0.3s;"></div>
                 </div>
@@ -226,7 +226,8 @@ require_once 'components/header.php';
             length: value.length >= 8,
             lower: /[a-z]/.test(value),
             upper: /[A-Z]/.test(value),
-            number: /[0-9]/.test(value)
+            number: /[0-9]/.test(value),
+            symbol: /[^A-Za-z0-9]/.test(value) // <-- Added Symbol Check
         };
         const score = Object.values(checks).filter(Boolean).length;
         return { checks, score };
@@ -238,19 +239,19 @@ require_once 'components/header.php';
         if (!input || !fill) return false;
 
         const { checks, score } = evaluatePassword(input.value);
-        const percent = (score / 4) * 100;
+        const percent = (score / 5) * 100; // <-- Updated out of 5 total checks
         
         fill.style.width = percent + '%';
         
         if (score <= 2) {
             fill.style.background = '#d32f2f'; // Red
-        } else if (score === 3) {
+        } else if (score === 3 || score === 4) {
             fill.style.background = '#f57c00'; // Orange
         } else {
             fill.style.background = '#388e3c'; // Green
         }
 
-        return score === 4;
+        return score === 5; // Must pass all 5 criteria to submit
     }
 
     function bindStrength(inputId, fillId, formSelector) {

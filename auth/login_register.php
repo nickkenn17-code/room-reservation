@@ -93,8 +93,13 @@ if (isset($_POST['register'])) {
     }
 
     // 2. Strict Password Validation (Matches Frontend UI Rules)
-    if (strlen($password_raw) < 8 || !preg_match('/[a-z]/', $password_raw) || !preg_match('/[A-Z]/', $password_raw) || !preg_match('/[0-9]/', $password_raw)) {
-        $_SESSION['login_error'] = 'Password must be at least 8 chars and include upper, lower, and a number.';
+    if (strlen($password_raw) < 8 || 
+        !preg_match('/[a-z]/', $password_raw) || 
+        !preg_match('/[A-Z]/', $password_raw) || 
+        !preg_match('/[0-9]/', $password_raw) || 
+        !preg_match('/[^a-zA-Z0-9]/', $password_raw)) { // <-- Added Symbol Regex Check
+        
+        $_SESSION['login_error'] = 'Password must be at least 8 chars, include upper, lower, a number, and a symbol.';
         header("Location: ../index.php");
         exit();
     }
