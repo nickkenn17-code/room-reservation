@@ -83,10 +83,18 @@ if (isset($_POST['register'])) {
     $name = $_POST['name'];
     $email = $_POST['email'];  
     $password_raw = $_POST['password'];
+    $confirm_password = $_POST['confirm_password']; // New field check
 
-    // Basic password validation
-    if (strlen($password_raw) < 8) {
-        $_SESSION['login_error'] = 'Password must be at least 8 characters.';
+    // 1. Verify Passwords Match
+    if ($password_raw !== $confirm_password) {
+        $_SESSION['login_error'] = 'Passwords do not match.';
+        header("Location: ../index.php");
+        exit();
+    }
+
+    // 2. Strict Password Validation (Matches Frontend UI Rules)
+    if (strlen($password_raw) < 8 || !preg_match('/[a-z]/', $password_raw) || !preg_match('/[A-Z]/', $password_raw) || !preg_match('/[0-9]/', $password_raw)) {
+        $_SESSION['login_error'] = 'Password must be at least 8 chars and include upper, lower, and a number.';
         header("Location: ../index.php");
         exit();
     }
@@ -112,7 +120,7 @@ if (isset($_POST['register'])) {
             $new_user_id = $user_stmt->insert_id;
             $role = 'Staff';
             
-            // NOTE: We assign event_id = 1 here so it passes the Database CHECK constraint we added!
+            // Assign event_id = 1 so it passes the Database CHECK constraint
             $event_id = 1; 
 
             $role_stmt = $conn->prepare("INSERT INTO role (user_id, role, event_id) VALUES (?, ?, ?)");
