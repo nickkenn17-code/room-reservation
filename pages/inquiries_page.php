@@ -41,10 +41,10 @@ $inquiries_list = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 <style>
     .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; align-items: start; }
     .meeting-card { padding: 22px; background: #ffffff; border-radius: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.2s; border: 1px solid #eee; height: auto; }
-    .message-display { background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee; text-align: left; white-space: pre-wrap; font-size: 14px; margin-top: 10px; }
+    .message-display { background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee; text-align: left; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; font-size: 14px; margin-top: 10px; line-height: 1.6; }
     .custom-modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
     .custom-modal.show { display: flex; }
-    .custom-modal-content { background: #ffffff; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+    .custom-modal-content { background: #ffffff; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
     .btn-submit { width: 100%; padding: 12px; background: #5a0505; color: #fff; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
     .btn-cancel { width: 100%; padding: 12px; background: #f0f0f0; color: #333; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; }
     .absence-textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #ddd; margin-top: 10px; resize: vertical; min-height: 100px; }
@@ -75,7 +75,7 @@ $inquiries_list = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             <p id="modalVisitorName" style="font-weight:bold;"><i class="fas fa-user"></i> <span class="name-text"></span></p>
             <p id="modalVisitorEmail"><i class="fas fa-envelope"></i> <span class="email-text"></span></p>
         </div>
-        <div id="modalFullMessage" class="message-display" style="min-height: 100px;"></div>
+        <div id="modalFullMessage" class="message-display" style="min-height: 100px; max-height: 45vh; overflow-y: auto;"></div>
         
         <div id="replyDisplayArea" style="display: none; background: #e8f4fd; padding: 15px; border-radius: 12px; margin-top: 20px; margin-bottom: 20px;">
             <strong style="display: block; margin-bottom: 10px;">Staff Reply:</strong> 
@@ -96,7 +96,9 @@ document.querySelector('.member-grid').addEventListener('click', (e) => {
     if (card) {
         const data = JSON.parse(card.dataset.inquiry);
         document.getElementById('modalEventName').innerText = data.event_name;
-        document.getElementById('modalFullMessage').innerText = data.message;
+        const modalFullMessage = document.getElementById('modalFullMessage');
+        modalFullMessage.innerText = data.message;
+        modalFullMessage.style.height = 'auto';
         document.querySelector('.name-text').innerText = data.visitor_name;
         document.querySelector('.email-text').innerText = data.visitor_email;
         

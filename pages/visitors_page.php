@@ -124,7 +124,7 @@
     <div style="background: #ffffff; border-radius: 12px; width: 90%; max-width: 750px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
         
         <div id="modalEventImage" style="height: 220px; background-size: cover; background-position: center; position: relative;">
-            <button onclick="openGalleryModal()" style="position: absolute; bottom: 15px; right: 15px; background: rgba(255,255,255,0.85); border: none; border-radius: 20px; padding: 6px 16px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; color: #333; z-index: 10;">
+            <button type="button" onclick="openGalleryModal(currentEventData)" style="position: absolute; bottom: 15px; right: 15px; background: rgba(255,255,255,0.85); border: none; border-radius: 20px; padding: 6px 16px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; color: #333; z-index: 10;">
                 View more <i class="fas fa-chevron-right" style="font-size: 10px; margin-left: 5px;"></i>
             </button>
         </div>
@@ -184,7 +184,10 @@
 </div>
 
 <script>
+let currentEventData = null;
+
 function openEventModal(eventData) {
+    currentEventData = eventData;
     // Populate Data
     document.getElementById('modalEventImage').style.backgroundImage = `url('${eventData.cover_image_url}')`;
     document.getElementById('modalEventTitle').innerText = eventData.event_name;
@@ -206,24 +209,35 @@ function closeEventModal() {
     document.getElementById('eventDetailModal').style.display = 'none';
 }
 
-function openGalleryModal() {
+function openGalleryModal(eventData) {
+    if (!eventData || !eventData.id) {
+        return;
+    }
+
     // 1. Hide the Details Modal
     document.getElementById('eventDetailModal').style.display = 'none';
-    
-    // 2. Populate the grid with 1.jpg through 25.jpg
     const container = document.getElementById('masonryContainer');
-    
-    // Only generate the images if the container is empty so we don't duplicate them
-    if (container.innerHTML.trim() === '') {
-        for (let i = 1; i <= 25; i++) {
-            const img = document.createElement('img');
-            img.src = `../assets/images/gallery/${i}.jpg`;
-            img.loading = "lazy"; // Prevents lag when loading 25 images!
-            container.appendChild(img);
-        }
-    }
-    
-    // 3. Show the Gallery Modal
+
+    container.innerHTML = '';
+
+    fetch(`../auth/get_images.php?event_id=${eventData.id}`)
+        .then(res => res.json())
+        .then(images => {
+            if (!images.length) {
+                container.innerHTML = '<p style="font-family: \"Montserrat\", sans-serif; color: #666; grid-column: 1 / -1; text-align: center;">No gallery images available for this event.</p>';
+                return;
+            }
+
+            images.forEach(img => {
+                const imageElement = document.createElement('img');
+                imageElement.src = img.image_path.startsWith('../') || img.image_path.startsWith('/')
+                    ? img.image_path
+                    : `../${img.image_path}`;
+                imageElement.loading = "lazy";
+                container.appendChild(imageElement);
+            });
+        });
+
     document.getElementById('galleryModal').style.display = 'flex';
 }
 

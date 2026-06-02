@@ -101,7 +101,7 @@
 <div id="eventDetailModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 99998; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
     <div style="background: #ffffff; border-radius: 12px; width: 90%; max-width: 750px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
         <div id="modalEventImage" style="height: 220px; background-size: cover; background-position: center; position: relative;">
-            <button onclick="openGalleryModal()" style="position: absolute; bottom: 15px; right: 15px; background: rgba(255,255,255,0.85); border: none; border-radius: 20px; padding: 6px 16px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; color: #333; z-index: 10;">
+            <button type="button" onclick="openGalleryModal(currentEventData)" style="position: absolute; bottom: 15px; right: 15px; background: rgba(255,255,255,0.85); border: none; border-radius: 20px; padding: 6px 16px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; color: #333; z-index: 10;">
                 View more <i class="fas fa-chevron-right" style="font-size: 10px; margin-left: 5px;"></i>
             </button>
         </div>
@@ -150,7 +150,7 @@
         </div>
 
         <div style="padding: 25px;">
-            <form action="../auth/process_edit.php" method="POST">
+            <form action="../auth/process_edit.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" id="editFormId" name="event_id">
 
                 <div style="margin-bottom: 15px;">
@@ -173,9 +173,14 @@
                     </div>
                 </div>
 
-                <div style="margin-bottom: 25px;">
+                <div style="margin-bottom: 15px;">
                     <label style="display: block; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: #333; margin-bottom: 6px;">Description</label>
-                    <textarea id="editFormDesc" name="description" rows="5" style="width: 100%; padding: 10px; border: 1.5px solid #ccc; border-radius: 6px; font-family: 'Montserrat', sans-serif; box-sizing: border-box; resize: vertical;" required></textarea>
+                    <textarea id="editFormDesc" name="description" rows="3" style="width: 100%; padding: 10px; border: 1.5px solid #ccc; border-radius: 6px; font-family: 'Montserrat', sans-serif; box-sizing: border-box; resize: vertical;" required></textarea>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: #333; margin-bottom: 6px;">Add Gallery Image</label>
+                    <input type="file" name="event_image" accept="image/*" style="width: 100%; padding: 10px; border: 1.5px solid #ccc; border-radius: 6px; font-family: 'Montserrat', sans-serif; box-sizing: border-box;">
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 15px;">
@@ -200,8 +205,11 @@
 </div>
 
 <script>
+let currentEventData = null;
+
 // ---------- DETAILS MODAL LOGIC ----------
 function openEventModal(eventData) {
+    currentEventData = eventData;
     document.getElementById('modalEventImage').style.backgroundImage = `url('${eventData.cover_image_url}')`;
     document.getElementById('modalEventTitle').innerText = eventData.event_name;
     document.getElementById('modalEventId').innerText = `Event ID: EVT-${eventData.id.toString().padStart(4, '0')}`;
@@ -249,18 +257,33 @@ function closeEditModal() {
 }
 
 // ---------- GALLERY MODAL LOGIC ----------
-function openGalleryModal() {
+function openGalleryModal(eventData) {
+    if (!eventData || !eventData.id) {
+        return;
+    }
+
     document.getElementById('eventDetailModal').style.display = 'none';
     const container = document.getElementById('masonryContainer');
+    container.innerHTML = '';
     
-    if (container.innerHTML.trim() === '') {
-        for (let i = 1; i <= 25; i++) {
-            const img = document.createElement('img');
-            img.src = `../assets/images/gallery/${i}.jpg`;
-            img.loading = "lazy"; 
-            container.appendChild(img);
+    // Dynamically load images for this event_id
+    fetch(`../auth/get_images.php?event_id=${eventData.id}`)
+    .then(res => res.json())
+    .then(images => {
+        if (!images.length) {
+            container.innerHTML = '<p style="font-family: \"Montserrat\", sans-serif; color: #666; grid-column: 1 / -1; text-align: center;">No gallery images available for this event.</p>';
+            return;
         }
-    }
+
+        images.forEach(img => {
+            const imgElement = document.createElement('img');
+            imgElement.src = img.image_path.startsWith('../') || img.image_path.startsWith('/')
+                ? img.image_path
+                : `../${img.image_path}`;
+            imgElement.loading = "lazy";
+            container.appendChild(imgElement);
+        });
+    });
     document.getElementById('galleryModal').style.display = 'flex';
 }
 
